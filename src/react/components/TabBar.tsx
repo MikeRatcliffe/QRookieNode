@@ -21,24 +21,19 @@ const tabs: Tab[] = [
 const TabBar: React.FC = () => {
   const location = useLocation();
 
-  return (
-    <div style={styles.container}>
-      {tabs.map(tab => (
-        <Link
-          key={tab.path}
-          to={tab.path}
-          style={{
-            ...styles.tab,
-            ...(tab.isFlexible ? styles.flexibleTab : styles.nonFlexibleTab),
-            ...(location.pathname === tab.path && tab.isFlexible ? styles.activeTab : {}),
-          }}
-        >
-          <Icon icon={tab.icon} size="lg" />
-          <span style={styles.tabText}>{tab.name}</span>
-        </Link>
-      ))}
-    </div>
-  );
+  return <div style={styles.container}>
+    {tabs.map(tab => <Link
+      key={tab.path}
+      to={tab.path}
+      style={{
+        ...styles.tab,
+        ...(tab.isFlexible ? styles.flexibleTab : styles.nonFlexibleTab),
+        ...(location.pathname === tab.path && tab.isFlexible ? styles.activeTab : {}),
+      }}>
+      <Icon icon={tab.icon} size="lg" />
+      <span style={styles.tabText}>{tab.name}</span>
+    </Link>)}
+  </div>;
 };
 
 const styles: { [key: string]: CSSProperties } = {

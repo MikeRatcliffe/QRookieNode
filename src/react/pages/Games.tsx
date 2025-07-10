@@ -71,107 +71,84 @@ const Games: React.FC = () => {
     return <GameDetailsPage game={result.find(game => game.id === id)!} />;
   }
 
-  return (
-    <>
-      <div className="game-list-header">
-        <Icon icon={Icons.solid.faSearch} size="xl" />
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={{ flex: 1 }}
-          placeholder="Search"
-        />
-        <CenteredLoading visible={result.length === 0 || loading} />
-        <ToggleView onToggle={setIsGrid} />
-        <strong>Limit:</strong>
-        <select onChange={e => setLimit(Number.parseInt(e.target.value))} value={`${limit}`}>
-          <option value="10">10</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-          <option value="250">250</option>
-          <option value="500">500</option>
-          <option value="1000">1000</option>
-          <option value="10000">All (Not Recomended)</option>
-        </select>
-        <button className="dropdown-toggle" type="button" onClick={() => setShowSort(!showSort)}>
-          {getSortIcon(sortField, sortOrder)}{" "}
-          <Icon
-            className="dropdown-icon"
-            icon={getIconByCaseInsensitiveName("chevron-down")}
-            size="xs"
-          />
-          {showSort && (
-            <>
-              <div id="sortdropdown" className="dropdown-menu">
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    handleSort("name", "asc");
-                  }}
-                >
-                  {getSortIcon("name", "asc")}
-                </a>
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    handleSort("name", "desc");
-                  }}
-                >
-                  {getSortIcon("name", "desc")}
-                </a>
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    handleSort("size", "asc");
-                  }}
-                >
-                  {getSortIcon("size", "asc")}
-                </a>
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    handleSort("size", "desc");
-                  }}
-                >
-                  {getSortIcon("size", "desc")}
-                </a>
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    handleSort("lastUpdated", "asc");
-                  }}
-                >
-                  {getSortIcon("lastUpdated", "asc")}
-                </a>
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    handleSort("lastUpdated", "desc");
-                  }}
-                >
-                  {getSortIcon("lastUpdated", "desc")}
-                </a>
-              </div>
-            </>
-          )}
-        </button>
-      </div>
-      <div className={"game-list" + (isGrid ? "" : " list")}>
-        {filteredAndSortedResults
-          .filter((_, i) => i < limit)
-          .map(item => item.game)
-          .map(game => (
-            <GameCard
-              key={game.id}
-              game={game}
-              onSelect={game => void navigate(game.id ?? "")}
-              onDownload={() => downloadManager.downloadGame(game.id)}
-            />
-          ))}
-      </div>
-    </>
-  );
+  return <>
+    <div className="game-list-header">
+      <Icon icon={Icons.solid.faSearch} size="xl" />
+      <input type="text" value={search} onChange={e => setSearch(e.target.value)} style={{ flex: 1 }} placeholder="Search" />
+      <CenteredLoading visible={result.length === 0 || loading} />
+      <ToggleView onToggle={setIsGrid} />
+      <strong>Limit:</strong>
+      <select onChange={e => setLimit(Number.parseInt(e.target.value))} value={`${limit}`}>
+        <option value="10">10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="250">250</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+        <option value="10000">All (Not Recomended)</option>
+      </select>
+      <button className="dropdown-toggle" type="button" onClick={() => setShowSort(!showSort)}>
+        {getSortIcon(sortField, sortOrder)} <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName("chevron-down")} size="xs" />
+        {showSort && <>
+          <div id="sortdropdown" className="dropdown-menu">
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                handleSort("name", "asc");
+              }}>
+              {getSortIcon("name", "asc")}
+            </a>
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                handleSort("name", "desc");
+              }}>
+              {getSortIcon("name", "desc")}
+            </a>
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                handleSort("size", "asc");
+              }}>
+              {getSortIcon("size", "asc")}
+            </a>
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                handleSort("size", "desc");
+              }}>
+              {getSortIcon("size", "desc")}
+            </a>
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                handleSort("lastUpdated", "asc");
+              }}>
+              {getSortIcon("lastUpdated", "asc")}
+            </a>
+            <a
+              className="dropdown-item"
+              onClick={() => {
+                handleSort("lastUpdated", "desc");
+              }}>
+              {getSortIcon("lastUpdated", "desc")}
+            </a>
+          </div>
+        </>}
+      </button>
+    </div>
+    <div className={"game-list" + (isGrid ? "" : " list")}>
+      {filteredAndSortedResults
+        .filter((_, i) => i < limit)
+        .map(item => item.game)
+        .map(game => <GameCard
+          key={game.id}
+          game={game}
+          onSelect={game => void navigate(game.id ?? "")}
+          onDownload={() => downloadManager.downloadGame(game.id)}
+        />)}
+    </div>
+  </>;
 };
 
 export default Games;
@@ -260,8 +237,7 @@ function sortGames(games: SearchRelevance[], field: SortField, order: SortOrder)
   return [...games].sort((a, b) => {
     // Special case for relevance since it's not a direct property of Game
     if (field === "relevance") {
-      const relevanceCompare =
-        order === "asc" ? a.relevance - b.relevance : b.relevance - a.relevance;
+      const relevanceCompare = order === "asc" ? a.relevance - b.relevance : b.relevance - a.relevance;
       // If relevance is the same, sort alphabetically by game name
       if (relevanceCompare === 0) {
         return a.game.name.localeCompare(b.game.name);
@@ -285,38 +261,20 @@ function sortGames(games: SearchRelevance[], field: SortField, order: SortOrder)
 function getSortIcon(field: SortField, order: SortOrder) {
   switch (field) {
     case "name":
-      return (
-        <>
-          <Icon
-            className="dropdown-icon"
-            icon={getIconByCaseInsensitiveName(`sort-alpha-${order}`)}
-            size="1x"
-          />
-          {order === "asc" ? "Name" : "Name (decending)"}
-        </>
-      );
+      return <>
+        <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName(`sort-alpha-${order}`)} size="1x" />
+        {order === "asc" ? "Name" : "Name (decending)"}
+      </>;
     case "size":
-      return (
-        <>
-          <Icon
-            className="dropdown-icon"
-            icon={getIconByCaseInsensitiveName(`sort-amount-${order}`)}
-            size="1x"
-          />
-          {order === "asc" ? "Size" : "Size (decending)"}
-        </>
-      );
+      return <>
+        <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName(`sort-amount-${order}`)} size="1x" />
+        {order === "asc" ? "Size" : "Size (decending)"}
+      </>;
     case "lastUpdated":
-      return (
-        <>
-          <Icon
-            className="dropdown-icon"
-            icon={getIconByCaseInsensitiveName(`sort-amount-${order}`)}
-            size="1x"
-          />
-          {order === "asc" ? "Last Updated" : "Last Updated (decending)"}
-        </>
-      );
+      return <>
+        <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName(`sort-amount-${order}`)} size="1x" />
+        {order === "asc" ? "Last Updated" : "Last Updated (decending)"}
+      </>;
     default:
       return null;
   }

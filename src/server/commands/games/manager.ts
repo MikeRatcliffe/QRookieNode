@@ -66,12 +66,7 @@ class GameManager {
         return false;
       }
 
-      fs.writeFile(
-        join(downloadDir, "torrents.json"),
-        JSON.stringify(json, null, 2),
-        "utf-8",
-        () => {}
-      );
+      fs.writeFile(join(downloadDir, "torrents.json"), JSON.stringify(json, null, 2), "utf-8", () => {});
 
       this.games = json.map((game: WebGame) => {
         const existingGame = vrpManager.getGame(game.name || "");
@@ -151,9 +146,7 @@ class GameManager {
       dataDir: fs.existsSync(dataDir) ? dataDir : undefined,
       packageName: game.packageName,
       obbFiles: fs.existsSync(dataDir) ? fs.readdirSync(dataDir) : undefined,
-      apkFile: fs.existsSync(gameDir)
-        ? fs.readdirSync(gameDir).find(file => file.endsWith(".apk")) || undefined
-        : undefined,
+      apkFile: fs.existsSync(gameDir) ? fs.readdirSync(gameDir).find(file => file.endsWith(".apk")) || undefined : undefined,
     };
   }
 

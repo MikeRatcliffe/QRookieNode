@@ -68,11 +68,7 @@ export default class Downloader extends RunSystemCommand {
     fs.rmSync(downloadDirectory, { recursive: true });
   }
 
-  public async downloadFile(
-    fileName: string,
-    baseUrl: string,
-    finalPath: string
-  ): Promise<boolean> {
+  public async downloadFile(fileName: string, baseUrl: string, finalPath: string): Promise<boolean> {
     const tempPath = `${finalPath}`;
     const url = new URL(fileName, baseUrl);
     const headers: Record<string, string> = {
@@ -92,13 +88,7 @@ export default class Downloader extends RunSystemCommand {
         if (headers[":status"] !== 200) {
           fileStream.close();
           fs.unlinkSync(finalPath); // Remove the corrupted file
-          reject(
-            new Error(
-              `HTTP/2 Error: ${headers[":status"]} - ${
-                statusCodeToReasonPhrase[headers[":status"] || ""]
-              }`
-            )
-          );
+          reject(new Error(`HTTP/2 Error: ${headers[":status"]} - ${statusCodeToReasonPhrase[headers[":status"] || ""]}`));
           req.close();
           return;
         }
@@ -127,11 +117,7 @@ export default class Downloader extends RunSystemCommand {
     });
   }
 
-  private async getBodyWithHttp2(
-    url: URL,
-    stream?: WriteStream,
-    progress?: (addSize: number) => boolean
-  ): Promise<string | boolean> {
+  private async getBodyWithHttp2(url: URL, stream?: WriteStream, progress?: (addSize: number) => boolean): Promise<string | boolean> {
     log.info(`Downloading: ${url}`);
     const client = http2.connect(url.origin);
     const headers: Record<string, string> = {
@@ -248,11 +234,7 @@ export default class Downloader extends RunSystemCommand {
     return false;
   }
 
-  public async downloadDir(
-    baseUrl: string,
-    id: string,
-    vrpPublicData: VrpPublicData | null
-  ): Promise<GameStatusInfo | null> {
+  public async downloadDir(baseUrl: string, id: string, vrpPublicData: VrpPublicData | null): Promise<GameStatusInfo | null> {
     const prepareResult = this.prepareDownloadIfNeeded(id);
     const url = new URL(id + "/", baseUrl);
     let progressInfo: GameStatusInfo = {
@@ -331,10 +313,7 @@ export default class Downloader extends RunSystemCommand {
     fs.readdirSync(downloadDirectory)
       .filter(item => fs.statSync(path.join(downloadDirectory, item)).isDirectory())
       .forEach(dir => {
-        fs.renameSync(
-          path.join(downloadDirectory, dir),
-          path.join(downloadDirectory, extractDirName)
-        );
+        fs.renameSync(path.join(downloadDirectory, dir), path.join(downloadDirectory, extractDirName));
       });
 
     fs.readdirSync(downloadDirectory)
@@ -344,13 +323,7 @@ export default class Downloader extends RunSystemCommand {
       });
   }
 
-  private batchDownloadFiles(
-    id: string,
-    url: URL,
-    downloadDirectory: string,
-    files: DownloadProgress[],
-    progressInfo: GameStatusInfo
-  ): Promise<boolean> {
+  private batchDownloadFiles(id: string, url: URL, downloadDirectory: string, files: DownloadProgress[], progressInfo: GameStatusInfo): Promise<boolean> {
     if (progressInfo.status !== "downloading") return Promise.resolve(false);
 
     let resolvePromise: (result: boolean) => void;
@@ -371,10 +344,7 @@ export default class Downloader extends RunSystemCommand {
 
     const downloadNext = () => {
       if (currentIndex >= files.length) {
-        const isFinished = files.reduce(
-          (acc, file) => acc && (file?.percent === 100 || file?.percent === CANCELLED),
-          true
-        );
+        const isFinished = files.reduce((acc, file) => acc && (file?.percent === 100 || file?.percent === CANCELLED), true);
         if (isFinished) {
           resolvePromise(success);
         }
@@ -471,9 +441,7 @@ export default class Downloader extends RunSystemCommand {
     let totalSize = 0;
     const files: DownloadProgress[] = [];
     for (const line of lines) {
-      const match = line.match(
-        /<a href="([^"]+)">[^<]+<\/a>\s+(\d{2}-\w{3}-\d{4}\s+\d{2}:\d{2})\s+(\d+)/
-      );
+      const match = line.match(/<a href="([^"]+)">[^<]+<\/a>\s+(\d{2}-\w{3}-\d{4}\s+\d{2}:\d{2})\s+(\d+)/);
       if (match) {
         const name = match[1];
         const bytesTotal = parseInt(match[3], 10);

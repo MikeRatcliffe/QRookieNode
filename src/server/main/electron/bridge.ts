@@ -14,12 +14,9 @@ void app.whenReady().then(() => {
 });
 
 console.log("Bridge is ready");
-ipcMain.handle(
-  BridgeSendCommandEvent,
-  async (event: IpcMainInvokeEvent, commandEvent: CommandEvent<any, any>) => {
-    return executeCommand(commandEvent);
-  }
-);
+ipcMain.handle(BridgeSendCommandEvent, async (event: IpcMainInvokeEvent, commandEvent: CommandEvent<any, any>) => {
+  return executeCommand(commandEvent);
+});
 
 export const sendInfo = (info: GameStatusInfo) => {
   getMainWindow()?.webContents.send("downloadProgress", info);

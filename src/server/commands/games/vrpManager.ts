@@ -46,10 +46,7 @@ export class VprManager extends RunSystemCommand {
   }
 
   private catchMetadataError(error: Error): void {
-    log.error(
-      "Failed to update metadata. There is an issue with either your connection, or the server.",
-      error
-    );
+    log.error("Failed to update metadata. There is an issue with either your connection, or the server.", error);
   }
 
   public async loadGamesInfo(): Promise<boolean> {
@@ -65,10 +62,7 @@ export class VprManager extends RunSystemCommand {
 
       if (!json || !Array.isArray(json.games)) {
         log.error("Invalid games_info.json");
-      } else if (
-        new Date().getTime() - lastDownloaded.getTime() >
-        VprManager.METADATA_EXPIRATION_TIME
-      ) {
+      } else if (new Date().getTime() - lastDownloaded.getTime() > VprManager.METADATA_EXPIRATION_TIME) {
         log.warn("Games info is outdated");
       } else {
         this.games.clear();
@@ -198,9 +192,7 @@ export class VprManager extends RunSystemCommand {
   }
 
   public getDownloadedGames(): string[] {
-    return fs
-      .readdirSync(settingsManager.getDownloadsDir())
-      .filter(file => fs.existsSync(join(settingsManager.getDownloadsDir(), file, "finished")));
+    return fs.readdirSync(settingsManager.getDownloadsDir()).filter(file => fs.existsSync(join(settingsManager.getDownloadsDir(), file, "finished")));
   }
 }
 

@@ -1,33 +1,33 @@
 .settings .sections {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-betweenadb ;
-    gap: 1rem;
-    padding: 1em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-betweenadb;
+  gap: 1rem;
+  padding: 1em;
 }
 
 .settings section {
-    /* flex: 1; */
-    min-width: 400px;
+  /* flex: 1; */
+  min-width: 400px;
 }
 
 .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0.25rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
 }
 
 .tags > span {
-    background-color: lightgreen;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    border-radius: 10px;
-    border: 1.5px solid rgba(0, 0, 0, 0.2);
+  background-color: lightgreen;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 10px;
+  border: 1.5px solid rgba(0, 0, 0, 0.2);
 }
 
 .settings ul > li > pre {
-    margin: 0;
-    word-wrap: break-word;
-    text-wrap: wrap;
+  margin: 0;
+  word-wrap: break-word;
+  text-wrap: wrap;
 }

@@ -6,9 +6,7 @@ import log from "@server/log";
 import SystemProcess from "@server/systemProcess";
 import type { Settings, SystemHealth } from ".";
 
-export const appVersion = JSON.parse(
-  fs.readFileSync(path.join(buildRoot, "package.json"), "utf-8")
-).version;
+export const appVersion = JSON.parse(fs.readFileSync(path.join(buildRoot, "package.json"), "utf-8")).version;
 
 const settingsPath = path.join(appDataDir, "settings.json");
 const { showOpenDialog } = (function () {
@@ -24,9 +22,7 @@ class SettingsManager extends SystemProcess {
 
   constructor() {
     super();
-    this.settings = fs.existsSync(settingsPath)
-      ? JSON.parse(fs.readFileSync(settingsPath, "utf-8"))
-      : {};
+    this.settings = fs.existsSync(settingsPath) ? JSON.parse(fs.readFileSync(settingsPath, "utf-8")) : {};
     this.createDownloadsDir();
   }
   private createDownloadsDir() {
@@ -67,12 +63,7 @@ class SettingsManager extends SystemProcess {
     return gamesDir;
   }
 
-  private async getCommandInfo(
-    path: string | null,
-    name: string,
-    lines: number,
-    arg: string = "-h"
-  ): Promise<string> {
+  private async getCommandInfo(path: string | null, name: string, lines: number, arg: string = "-h"): Promise<string> {
     if (!path) {
       return "Not found, Please install " + name;
     }
@@ -94,9 +85,7 @@ class SettingsManager extends SystemProcess {
       adb: this.getCommandInfo(await this.getAdbPath(), "adb", 2, "version"),
       unzip: this.getCommandPath("unzip").then(path => this.getCommandInfo(path, "unzip", 1)),
       sevenZip: this.getSevenZipPath().then(path => this.getCommandInfo(path, "7zip", 2)),
-      java: this.getCommandPath("java").then(path =>
-        this.getCommandInfo(path, "java", 3, "--version")
-      ),
+      java: this.getCommandPath("java").then(path => this.getCommandInfo(path, "java", 3, "--version")),
     };
 
     return {

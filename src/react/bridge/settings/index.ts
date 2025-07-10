@@ -3,24 +3,13 @@ import semver from "semver";
 import { repoInfo, RepoDownloadsInfo, repoDownloadsInfo } from "./repoInfo";
 
 import bridge from "@bridge";
-import {
-  DevToolsCommandName,
-  Settings,
-  SettingsCommandName,
-  SettingsCommandOutputs,
-  SettingsCommandPayload,
-  SystemHealth,
-} from "@server/commands/types";
+import { DevToolsCommandName, Settings, SettingsCommandName, SettingsCommandOutputs, SettingsCommandPayload, SystemHealth } from "@server/commands/types";
 export type { GitHubRelease, Settings, SystemHealth } from "@server/commands/types";
 export type { RepoDownloadsInfo };
 
 class SettingsManager {
   public async getHealthInfo(): Promise<SystemHealth> {
-    return bridge.sendCommand<
-      SettingsCommandName,
-      SettingsCommandPayload,
-      SettingsCommandOutputs["systemHealth"]
-    >({
+    return bridge.sendCommand<SettingsCommandName, SettingsCommandPayload, SettingsCommandOutputs["systemHealth"]>({
       type: "settings",
       payload: {
         action: "getSystemHealth",
@@ -35,11 +24,7 @@ class SettingsManager {
   }
 
   public async getSettings(): Promise<Settings> {
-    return await bridge.sendCommand<
-      SettingsCommandName,
-      SettingsCommandPayload,
-      SettingsCommandOutputs["settings"]
-    >({
+    return await bridge.sendCommand<SettingsCommandName, SettingsCommandPayload, SettingsCommandOutputs["settings"]>({
       type: "settings",
       payload: {
         action: "list",

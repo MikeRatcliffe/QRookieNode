@@ -27,26 +27,13 @@ export interface GameCardProps {
   onSelect?: (game: Game) => void;
 }
 
-const GameCard: React.FC<GameCardProps> = ({
-  game,
-  onSelect,
-  onDownload,
-  verbose,
-  downloaded,
-}: GameCardProps) => {
-  const [gameStatus, setGameStatus] = useState<GameStatusInfo | null>(
-    downloadManager.getGameStatusInfo(game.id)
-  );
+const GameCard: React.FC<GameCardProps> = ({ game, onSelect, onDownload, verbose, downloaded }: GameCardProps) => {
+  const [gameStatus, setGameStatus] = useState<GameStatusInfo | null>(downloadManager.getGameStatusInfo(game.id));
   const [comparation, setComparation] = useState<GameFileComparison[]>([]);
   const [deviceVersion, setDeviceVersion] = useState<number | null>(null);
 
   const install = async (justMissing: boolean = false) => {
-    if (
-      gameStatus?.status === "installing" ||
-      gameStatus?.status === "unzipping" ||
-      gameStatus?.status === "pushing app data"
-    )
-      return;
+    if (gameStatus?.status === "installing" || gameStatus?.status === "unzipping" || gameStatus?.status === "pushing app data") return;
 
     const result = await gameManager.install(game.id, justMissing === true);
     if (result) {
@@ -69,12 +56,7 @@ const GameCard: React.FC<GameCardProps> = ({
   };
 
   const uninstall = async () => {
-    if (
-      !window.confirm(
-        "Are you sure you want to uninstall this game? You will lose all your progress."
-      )
-    )
-      return;
+    if (!window.confirm("Are you sure you want to uninstall this game? You will lose all your progress.")) return;
     await gameManager.uninstall(game.id);
     await loadComparation();
     setDeviceVersion(null);
@@ -154,12 +136,7 @@ const GameCard: React.FC<GameCardProps> = ({
     isInstalled = isInstalled || gameStatus?.status === "installed";
     if (isInstalled) {
       status.push(
-        <Button
-          key={status.length}
-          wide
-          onClick={() => void uninstall()}
-          icon={Icons.solid.faMinusCircle}
-        >
+        <Button key={status.length} wide onClick={() => void uninstall()} icon={Icons.solid.faMinusCircle}>
           Uninstall
         </Button>
       );
@@ -169,34 +146,20 @@ const GameCard: React.FC<GameCardProps> = ({
       if (isInstalled) {
         if (comparation.length > 0 && comparation.some(file => !file.deviceExists)) {
           status.push(
-            <Button
-              key={status.length}
-              onClick={() => void install(true)}
-              icon={Icons.solid.faDownload}
-            >
+            <Button key={status.length} onClick={() => void install(true)} icon={Icons.solid.faDownload}>
               Install Missing Files
             </Button>
           );
         } else {
           status.push(
-            <Button
-              key={status.length}
-              wide
-              onClick={() => void install()}
-              icon={Icons.solid.faBoxOpen}
-            >
+            <Button key={status.length} wide onClick={() => void install()} icon={Icons.solid.faBoxOpen}>
               Reinstall
             </Button>
           );
         }
       } else {
         status.push(
-          <Button
-            key={status.length}
-            wide
-            onClick={() => void install()}
-            icon={Icons.solid.faDownload}
-          >
+          <Button key={status.length} wide onClick={() => void install()} icon={Icons.solid.faDownload}>
             Install
           </Button>
         );
@@ -208,128 +171,102 @@ const GameCard: React.FC<GameCardProps> = ({
       );
     } else if (onDownload) {
       status.push(
-        <Button
-          key={status.length}
-          wide
-          onClick={() => void onDownload(game)}
-          icon={Icons.solid.faDownload}
-        >
+        <Button key={status.length} wide onClick={() => void onDownload(game)} icon={Icons.solid.faDownload}>
           Download
         </Button>
       );
     }
   }
 
-  return (
-    <>
-      <div className={"game-card" + (verbose ? " verbose" : "")}>
-        <div
-          className="game-card-image"
-          onClick={() => onSelect && onSelect(game)}
-          style={{ backgroundImage: `url(${getImagePath(game.packageName)})` }}
-        >
-          {/* Add Eye Icon */}
-        </div>
-        <div className="game-card-content">
-          <h3 className="game-card-title" onClick={() => onSelect && onSelect(game)}>
-            {game.normalName}
-          </h3>
-          {game.name !== game.normalName && <p className="game-card-subtitle">{game.name}</p>}
-          {verbose && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flex: 1,
-                textAlign: "left",
-                margin: "15px",
-              }}
-            >
-              <div style={{ marginRight: 10 }}>
-                <div>
-                  <strong>ID:</strong>
-                </div>
-                <div>
-                  <strong>Version:</strong>
-                </div>
-                {deviceVersion && deviceVersion != game.version && (
-                  <div>
-                    <strong>Device Version:</strong>
-                  </div>
-                )}
-                <div>
-                  <strong>Category:</strong>
-                </div>
-                <div>
-                  <strong>Package Name:</strong>
-                </div>
-                <div>
-                  <strong>Last Updated:</strong>
-                </div>
-              </div>
-              <div style={{ flex: 1 }}>
-                <div>{game.id}</div>
-                <div>{game.version}</div>
-                {deviceVersion && deviceVersion != game.version && <div>{deviceVersion}</div>}
-                <div>{game.category}</div>
-                <div>{game.packageName}</div>
-                <div>{game.lastUpdated}</div>
-              </div>
-            </div>
-          )}
-          <p className="game-card-size">{formatSize(game.size)}</p>
-          <div style={{ display: "flex", gap: 5, padding: 10, alignItems: "center" }}>{status}</div>
-        </div>
+  return <>
+    <div className={"game-card" + (verbose ? " verbose" : "")}>
+      <div className="game-card-image" onClick={() => onSelect && onSelect(game)} style={{ backgroundImage: `url(${getImagePath(game.packageName)})` }}>
+        {/* Add Eye Icon */}
       </div>
-      {verbose && gameStatus && <GameVerboseInfo gameStatus={gameStatus} />}
-      {isDownloaded && comparation.length > 0 && (
-        <div style={{ flex: 1 }}>
-          <table border={1} style={{ width: "100%" }}>
-            <thead>
-              <tr>
-                <th>File Name</th>
-                <th>On Local</th>
-                <th>On Device</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <b>APK Version</b>
-                </td>
-                <td align="center">{game.version}</td>
-                <td align="center">{deviceVersion || "Not Found"}</td>
-              </tr>
-              {comparation
-                .sort((a, b) => (a.deviceExists === b.deviceExists ? 0 : a.deviceExists ? 1 : -1))
-                .map((file, index) => (
-                  <tr key={index}>
-                    <td>{file.fileName}</td>
-                    <td align="center">
-                      <BooleanView value={file.localExists} />
-                    </td>
-                    <td align="center">
-                      <BooleanView value={file.deviceExists} />
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </>
-  );
+      <div className="game-card-content">
+        <h3 className="game-card-title" onClick={() => onSelect && onSelect(game)}>
+          {game.normalName}
+        </h3>
+        {game.name !== game.normalName && <p className="game-card-subtitle">{game.name}</p>}
+        {verbose && <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flex: 1,
+            textAlign: "left",
+            margin: "15px",
+          }}>
+          <div style={{ marginRight: 10 }}>
+            <div>
+              <strong>ID:</strong>
+            </div>
+            <div>
+              <strong>Version:</strong>
+            </div>
+            {deviceVersion && deviceVersion != game.version && <div>
+              <strong>Device Version:</strong>
+            </div>}
+            <div>
+              <strong>Category:</strong>
+            </div>
+            <div>
+              <strong>Package Name:</strong>
+            </div>
+            <div>
+              <strong>Last Updated:</strong>
+            </div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div>{game.id}</div>
+            <div>{game.version}</div>
+            {deviceVersion && deviceVersion != game.version && <div>{deviceVersion}</div>}
+            <div>{game.category}</div>
+            <div>{game.packageName}</div>
+            <div>{game.lastUpdated}</div>
+          </div>
+        </div>}
+        <p className="game-card-size">{formatSize(game.size)}</p>
+        <div style={{ display: "flex", gap: 5, padding: 10, alignItems: "center" }}>{status}</div>
+      </div>
+    </div>
+    {verbose && gameStatus && <GameVerboseInfo gameStatus={gameStatus} />}
+    {isDownloaded && comparation.length > 0 && <div style={{ flex: 1 }}>
+      <table border={1} style={{ width: "100%" }}>
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>On Local</th>
+            <th>On Device</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <b>APK Version</b>
+            </td>
+            <td align="center">{game.version}</td>
+            <td align="center">{deviceVersion || "Not Found"}</td>
+          </tr>
+          {comparation
+            .sort((a, b) => (a.deviceExists === b.deviceExists ? 0 : a.deviceExists ? 1 : -1))
+            .map((file, index) => <tr key={index}>
+              <td>{file.fileName}</td>
+              <td align="center">
+                <BooleanView value={file.localExists} />
+              </td>
+              <td align="center">
+                <BooleanView value={file.deviceExists} />
+              </td>
+            </tr>)}
+        </tbody>
+      </table>
+    </div>}
+  </>;
 };
 
 const compareFiles = async (id: string): Promise<GameFileComparison[]> => {
-  const [localFiles, deviceFiles] = await Promise.all([
-    downloadManager.getLocalFiles(id),
-    gameManager.getObbFileList(id),
-  ]);
-  const allFiles = [
-    ...localFiles.filter(file => file.trim() !== ""),
-    ...deviceFiles.filter(file => file.trim() !== ""),
-  ];
+  const [localFiles, deviceFiles] = await Promise.all([downloadManager.getLocalFiles(id), gameManager.getObbFileList(id)]);
+  const allFiles = [...localFiles.filter(file => file.trim() !== ""), ...deviceFiles.filter(file => file.trim() !== "")];
 
   return Array.from(allFiles).map(file => ({
     fileName: file,

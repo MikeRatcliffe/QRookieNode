@@ -55,9 +55,7 @@ class AdbManager extends SystemProcess {
     const all = serials.map(async serial => ({
       serial,
       ip: await this.getIp(serial),
-      model:
-        this.devices.find(device => device.serial === serial)?.model ||
-        (await this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.product.model"])),
+      model: this.devices.find(device => device.serial === serial)?.model || (await this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.product.model"])),
     }));
 
     this.devices = (await Promise.all(all)).map(device => ({
@@ -80,21 +78,14 @@ class AdbManager extends SystemProcess {
     };
 
     const ip = cachedDevice.ip || this.getIp(serial);
-    const model =
-      cachedDevice?.model ||
-      this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.product.model"]);
-    const androidVersion =
-      cachedDevice?.androidVersion ||
-      this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.build.version.release"]);
-    const sdkVersion =
-      cachedDevice?.sdkVersion?.toString() ||
-      this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.build.version.sdk"]);
+    const model = cachedDevice?.model || this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.product.model"]);
+    const androidVersion = cachedDevice?.androidVersion || this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.build.version.release"]);
+    const sdkVersion = cachedDevice?.sdkVersion?.toString() || this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.build.version.sdk"]);
     const batteryOutput = this.runAdbCommand(["-s", serial, "shell", "dumpsys", "battery"]);
     const spaceUsageOutput = this.runAdbCommand(["-s", serial, "shell", "df", "/sdcard"]);
 
     const batteryLevel = parseInt((await batteryOutput)?.match(/level:\s*(\d+)/)?.[1] || "0", 10);
-    const [, total, used] =
-      (await spaceUsageOutput).split("\n")[1]?.match(/(\d+)\s+(\d+)\s+(\d+)/) || [];
+    const [, total, used] = (await spaceUsageOutput).split("\n")[1]?.match(/(\d+)\s+(\d+)\s+(\d+)/) || [];
 
     cachedDevice.model = await model;
     cachedDevice.ip = await ip;
@@ -140,18 +131,7 @@ class AdbManager extends SystemProcess {
       return this.apps;
     }
 
-    const args = [
-      "-s",
-      serial,
-      "shell",
-      "pm",
-      "list",
-      "packages",
-      "--user",
-      userId.toString(),
-      "--show-versioncode",
-      "-3",
-    ];
+    const args = ["-s", serial, "shell", "pm", "list", "packages", "--user", userId.toString(), "--show-versioncode", "-3"];
 
     const output = await this.runAdbCommand(args);
     const lines = output.split("\n").filter(Boolean);
@@ -216,14 +196,7 @@ class AdbManager extends SystemProcess {
     const serial = this.getDeviceSerial();
     if (!serial) throw new Error("No device selected");
 
-    void this.runAdbCommand([
-      "-s",
-      serial,
-      "shell",
-      "mkdir",
-      "-p",
-      `/sdcard/Android/obb/${packageName}/`,
-    ]);
+    void this.runAdbCommand(["-s", serial, "shell", "mkdir", "-p", `/sdcard/Android/obb/${packageName}/`]);
   }
 
   public async pushObbFile(filePath: string, packageName: string): Promise<void> {
@@ -232,27 +205,14 @@ class AdbManager extends SystemProcess {
     if (!fs.existsSync(filePath)) throw new Error("File not found " + filePath);
 
     const fileName = path.basename(filePath);
-    await this.runAdbCommand([
-      "-s",
-      serial,
-      "push",
-      "-p",
-      filePath,
-      `/sdcard/Android/obb/${packageName}/${fileName}`,
-    ]);
+    await this.runAdbCommand(["-s", serial, "push", "-p", filePath, `/sdcard/Android/obb/${packageName}/${fileName}`]);
   }
 
   public async listObbFiles(packageName: string): Promise<string[]> {
     const serial = this.getDeviceSerial();
     if (!serial) throw new Error("No device selected");
 
-    const output = await this.runAdbCommand([
-      "-s",
-      serial,
-      "shell",
-      "ls",
-      `/sdcard/Android/obb/${packageName}/`,
-    ]);
+    const output = await this.runAdbCommand(["-s", serial, "shell", "ls", `/sdcard/Android/obb/${packageName}/`]);
 
     return output.split("\n");
   }

@@ -11,24 +11,21 @@ interface GameDetailsPageProps {
 }
 
 const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ game }: GameDetailsPageProps) => {
-  return (
-    <>
-      <h1 style={{ textAlign: "center" }}>{game.name}</h1>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "start",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 35,
-          padding: 25,
-        }}
-      >
-        <GameCard game={game} onDownload={() => downloadManager.downloadGame(game.id)} verbose />
-      </div>
-    </>
-  );
+  return <>
+    <h1 style={{ textAlign: "center" }}>{game.name}</h1>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "start",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 35,
+        padding: 25,
+      }}>
+      <GameCard game={game} onDownload={() => downloadManager.downloadGame(game.id)} verbose />
+    </div>
+  </>;
 };
 
 export default GameDetailsPage;

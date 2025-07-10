@@ -51,15 +51,11 @@ class GameDownloadManager {
   }
 
   public removeDownloadingListener(callback: DownloadingListener) {
-    this.downloadingGamesChangeListeners = this.downloadingGamesChangeListeners.filter(
-      listener => listener !== callback
-    );
+    this.downloadingGamesChangeListeners = this.downloadingGamesChangeListeners.filter(listener => listener !== callback);
   }
 
   public emitDownloading() {
-    this.downloadingGamesChangeListeners.forEach(callback =>
-      callback(Object.values(this.downloadingGames))
-    );
+    this.downloadingGamesChangeListeners.forEach(callback => callback(Object.values(this.downloadingGames)));
   }
 
   public getGameStatusInfo(id: string): GameStatusInfo | null {
@@ -80,12 +76,10 @@ class GameDownloadManager {
   }
 
   public async getDownloadedGames(): Promise<string[]> {
-    const downloadedIds = await bridge.sendCommand<GamesCommandName, GamesCommandPayload, string[]>(
-      {
-        type: "games",
-        payload: { action: "listDownloaded" },
-      }
-    );
+    const downloadedIds = await bridge.sendCommand<GamesCommandName, GamesCommandPayload, string[]>({
+      type: "games",
+      payload: { action: "listDownloaded" },
+    });
     this.downloadedCache = downloadedIds;
     return downloadedIds;
   }

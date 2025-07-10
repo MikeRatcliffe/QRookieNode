@@ -24,8 +24,7 @@ const server = createServer((req, res) => {
     return;
   }
 
-  const filePath =
-    req.url === "/" ? join(reactBuildPath, "index.html") : join(reactBuildPath, req.url!);
+  const filePath = req.url === "/" ? join(reactBuildPath, "index.html") : join(reactBuildPath, req.url!);
   readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404);

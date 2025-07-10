@@ -7,12 +7,7 @@ import GamesCommand, { GameStatusInfo } from "./games";
 import SettingsCommand from "./settings";
 import DevToolsCommand from "./settings/devTools";
 
-const commands: Command<any, any, any>[] = [
-  DevToolsCommand,
-  AdbCommand,
-  GamesCommand,
-  SettingsCommand,
-];
+const commands: Command<any, any, any>[] = [DevToolsCommand, AdbCommand, GamesCommand, SettingsCommand];
 
 export const executeCommand = async (commandEvent: CommandEvent<any, any>) => {
   const command = commands.filter(command => command.type === commandEvent.type);

@@ -43,12 +43,7 @@ export const binExt = platform === "win32" ? ".exe" : "";
 
 function getPlatform(): "darwin" | "win32" | "linux" | "android" {
   const platform = process.platform;
-  if (
-    platform === "darwin" ||
-    platform === "win32" ||
-    platform === "linux" ||
-    platform === "android"
-  ) {
+  if (platform === "darwin" || platform === "win32" || platform === "linux" || platform === "android") {
     return platform;
   }
   throw new Error(`Unsupported platform: ${platform}`);

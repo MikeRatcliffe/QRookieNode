@@ -25,9 +25,7 @@ export default abstract class SystemProcess {
         log.info("ADB found at:", adbPath);
       } else {
         SystemProcess.adbPath = path.join(platformToolsDir, "adb" + binExt);
-        log.warn(
-          `ADB not found, downloading platform-tools. getCommandPath returned: '${adbPath}'`
-        );
+        log.warn(`ADB not found, downloading platform-tools. getCommandPath returned: '${adbPath}'`);
         await setupTools();
       }
 
@@ -69,10 +67,7 @@ export default abstract class SystemProcess {
   }
 
   public async getSevenZipPath(): Promise<string> {
-    return (
-      (await this.getCommandPath("7za")) ??
-      sevenBin.path7za.replace("app.asar", "app.asar.unpacked")
-    );
+    return (await this.getCommandPath("7za")) ?? sevenBin.path7za.replace("app.asar", "app.asar.unpacked");
   }
 
   public async getAdbPath(): Promise<string> {

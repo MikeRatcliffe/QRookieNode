@@ -7,7 +7,9 @@
   position: relative;
   width: 80px;
   height: 40px;
-  transition: width 0.2s linear, opacity 0.2s linear;
+  transition:
+    width 0.2s linear,
+    opacity 0.2s linear;
   overflow: hidden;
 }
 .lds-ellipsis.hide {
@@ -73,4 +75,3 @@
     transform: translate(24px, 0);
   }
 }
-

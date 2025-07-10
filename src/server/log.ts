@@ -55,8 +55,7 @@ class DevLogger extends UserLogger {
 
   public info = (...args: any[]) => shouldInfo && this.log("info", ...args, "");
 
-  public debug = (...args: any[]) =>
-    shouldDebug && this.log("debug", "\x1b[35m", ...args, "\x1b[0m");
+  public debug = (...args: any[]) => shouldDebug && this.log("debug", "\x1b[35m", ...args, "\x1b[0m");
 
   public command = (command: string, args: string[], stdout: string, stderr: string) => {
     if (!shouldDebugCommands) return;
@@ -68,9 +67,7 @@ class DevLogger extends UserLogger {
       "\n\x1b[32m<----------------------------------------",
       `\nCommand \x1b[33m'${command} ${args.join(" ")}'\x1b[32m executed\nstdout:\x1b[0m`,
       "\n\x1b[34m" + stdoutLines.slice(0, MAX_LOG_COMMAND_OUTPUT_LINES).join("\n") + "\x1b[0m",
-      stdoutLines.length > 20
-        ? `\n...and ${stdoutLines.length - MAX_LOG_COMMAND_OUTPUT_LINES} more lines`
-        : "",
+      stdoutLines.length > 20 ? `\n...and ${stdoutLines.length - MAX_LOG_COMMAND_OUTPUT_LINES} more lines` : "",
       stderr ? "\n\x1b[31mWith stderr: \n" + stderr + "\x1b[0m" : "",
       "\n\x1b[32m---------------------------------------->\x1b[0m"
     );

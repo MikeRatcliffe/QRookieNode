@@ -48,12 +48,7 @@ class WebSocketBridge implements BridgeInterface {
   }
 
   private connect(): WebSocket {
-    const port =
-      process.env.NODE_ENV === "development"
-        ? ":3001"
-        : window.location.port
-          ? ":" + window.location.port
-          : "";
+    const port = process.env.NODE_ENV === "development" ? ":3001" : window.location.port ? ":" + window.location.port : "";
     const socketUrl = "ws://" + window.location.hostname + port;
 
     console.log("Connecting to WebSocket", socketUrl);
@@ -104,9 +99,7 @@ class WebSocketBridge implements BridgeInterface {
     return socket;
   }
 
-  public async sendCommand<Name extends string, Input, Output>(
-    command: CommandEvent<Input, Name>
-  ): Promise<Output> {
+  public async sendCommand<Name extends string, Input, Output>(command: CommandEvent<Input, Name>): Promise<Output> {
     await this.connectionPromise;
     const uniqueId = Math.random().toString(36);
     return new Promise((resolve, reject) => {

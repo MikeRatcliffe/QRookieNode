@@ -3,6 +3,7 @@
 ## 📚 Dependencies
 
 You need to install the following dependencies:
+
 - nvm (Node Version Manager) or Node.js Lts
 - yarn (package manager) - Do not use npm
 - Inkscape (for icons generation)
@@ -24,6 +25,7 @@ yarn install # Do not use npm install
 ```
 
 ## 🚀 Running the project
+
 ```bash
 yarn dev # To run the project in development mode
 ```

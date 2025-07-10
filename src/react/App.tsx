@@ -9,30 +9,27 @@ import Settings from "@pages/Settings";
 import Users from "@pages/Users";
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-              <TabBar />
-              <div style={{ display: "flex", overflow: "auto", flexDirection: "column" }}>
-                <Outlet />
-              </div>
+  return <Router>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+            <TabBar />
+            <div style={{ display: "flex", overflow: "auto", flexDirection: "column" }}>
+              <Outlet />
             </div>
-          }
-        >
-          <Route path="/" element={<Navigate to="/games" replace />} />
-          <Route path="/games/:id?" element={<Games />} index={true} />
-          <Route path="/downloads" element={<Library />} />
-          <Route path="/devices" element={<Devices />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/settings" element={<Settings />} />
-        </Route>
-      </Routes>
-    </Router>
-  );
+          </div>
+        }>
+        <Route path="/" element={<Navigate to="/games" replace />} />
+        <Route path="/games/:id?" element={<Games />} index={true} />
+        <Route path="/downloads" element={<Library />} />
+        <Route path="/devices" element={<Devices />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/settings" element={<Settings />} />
+      </Route>
+    </Routes>
+  </Router>;
 }
 
 export default App;
