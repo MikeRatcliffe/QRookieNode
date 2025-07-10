@@ -23,11 +23,12 @@ export class VrpPublic {
         return null;
       }
 
-      // Decode password from Base64
       const baseUri = json.baseUri;
       const password = Buffer.from(json.password, "base64").toString("utf-8");
+      const result = { baseUri, password };
+      log.debug("VPR public data fetched successfully:", result);
 
-      return { baseUri, password };
+      return result;
     } catch (error) {
       log.error("Failed to fetch VPR public data:", error);
       return null;

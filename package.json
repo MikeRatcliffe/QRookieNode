@@ -24,7 +24,7 @@
     "react:build": "cross-env BUILD_PATH=dist/react craco build",
     "server:build": "tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json && cpy package.json dist/server --rename=package.json && json -I -f dist/server/package.json -e \"this.main='index.js'\"",
     "electron:dev": "nodemon --watch src/server --ext ts --exec \"yarn server:build && yarn electron:start\"",
-    "electron:start": "cross-env NODE_ENV=development electron --inspect=9222 ./dist/server/index.js --remote-debugging-port=9223 --log:debug",
+    "electron:start": "cross-env electron --inspect=9222 ./dist/server/index.js --remote-debugging-port=9223 --log:debug",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "lint": "eslint --config ./eslint.config.mjs src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --config ./eslint.config.mjs src --ext .js,.jsx,.ts,.tsx --fix",

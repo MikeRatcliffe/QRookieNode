@@ -3,12 +3,15 @@ import * as fs from "fs";
 import * as path from "path";
 import type { Game } from ".";
 
+import { downloadDir } from "@server/dirs";
+import log from "@server/log";
 import adbManager from "@commands/adb/manager";
 import settingsManager from "@commands/settings/manager";
-import log from "@server/log";
+
 import HttpDownloader, { extractDirName, progress } from "./downloader";
 import vrpManager from "./vrpManager";
 import vrpPublic from "./vrpPublic";
+import { join } from "path";
 
 interface WebGame {
   name?: string;
@@ -35,7 +38,7 @@ class GameManager {
   private downloader = new HttpDownloader();
   private lastPromise: Promise<boolean> | null = null;
 
-  private static readonly GAMES_URL = "https://torrents.vrpirates.wiki/torrents.json";
+  private static readonly GAMES_URL: string = "https://torrents.vrpirates.wiki/torrents.json";
 
   constructor() {
     void this.update();
@@ -62,6 +65,13 @@ class GameManager {
         log.error("Invalid data format:");
         return false;
       }
+
+      fs.writeFile(
+        join(downloadDir, "torrents.json"),
+        JSON.stringify(json, null, 2),
+        "utf-8",
+        () => {}
+      );
 
       this.games = json.map((game: WebGame) => {
         const existingGame = vrpManager.getGame(game.name || "");
