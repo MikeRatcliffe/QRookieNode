@@ -43,6 +43,26 @@
 
 ## Changes Log
 
+### Changes Release 0.3.0
+
+- Web Version
+    - Improve WebApp Manifest
+- Games Page
+    - Added sorting to the games page (dropdown to sort by name, size, date, etc).
+    - Fixed `getIconByCaseInsensitiveName()` to use `replaceAll` instead of `replace`.
+- Library
+    - Fixed the height of the "No Games Found" container on the library page.
+- Menu
+    - Added simple menu options (copy/paste package names, open DevTools via shortcut).
+- Core/Infra
+    - Fixed usage of installed adb instead of platform-tools adb.
+    - Corrected various typos in `.md` files and `.sh` scripts.
+    - Renamed the `comands` directory to `commands`.
+- Build/Dev
+    - Added React DevTools.
+    - Fixed eslint issues and ran `yarn lint:fix`.
+    - Adjusted eslint configuration to make contributions easier.
+
 ### Changes Release 0.2.2
 
 - Games

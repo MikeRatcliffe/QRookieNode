@@ -1,6 +1,8 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "QRookie Node",
+  "name": "QRookie Node - VR Games",
+  "description": "A platform for VR games and experiences.",
+  "lang": "en-US",
   "icons": [
     {
       "src": "favicon.ico",
