@@ -74,12 +74,6 @@ export default class Downloader extends RunSystemCommand {
     finalPath: string
   ): Promise<boolean> {
     const tempPath = `${finalPath}`;
-
-    if (fs.existsSync(finalPath)) {
-      log.warn(`File already exists: ${finalPath}`);
-      return true;
-    }
-
     const url = new URL(fileName, baseUrl);
     const headers: Record<string, string> = {
       ":method": "GET",

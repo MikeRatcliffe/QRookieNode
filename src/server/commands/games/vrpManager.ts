@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as crypto from "node:crypto";
 import { extractFull } from "node-7z";
 import { join } from "path";
 
@@ -18,69 +19,72 @@ export interface GameInfo {
   size: string;
 }
 
-type CachedGameInfo =
-  | {
-      lastDownloaded: string;
-      games: GameInfo[];
-    }
-  | GameInfo[];
+type CachedGameInfo = {
+  lastDownloaded?: string;
+  metadataHash?: string;
+  games: GameInfo[];
+};
 
 const metaFileName = "meta.7z";
 const metaFilePath = join(downloadDir, metaFileName);
 const gamesInfoFileName = "games_info.json";
+const vprFileName = "VRP-GameList.txt";
 
 export class VprManager extends RunSystemCommand {
+  private static METADATA_EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
+  private static inited: boolean = false;
+
   private games: Map<string, GameInfo> = new Map();
 
   constructor() {
     super();
-    void this.loadGamesInfo();
+    this.loadGamesInfo();
   }
 
   private get gamesFilePath(): string {
     return join(downloadDir, gamesInfoFileName);
   }
 
-  public async loadGamesInfo(): Promise<boolean> {
-    if (!fs.existsSync(this.gamesFilePath)) {
-      log.warn("games_info.json not found");
-      const result = await this.updateMetadata();
-      if (!result) {
-        log.error(
-          "Failed to update metadata. There is an issue with either your connection, or the server."
-        );
-        return false;
-      }
-    }
+  private catchMetadataError(error: Error): void {
+    log.error(
+      "Failed to update metadata. There is an issue with either your connection, or the server.",
+      error
+    );
+  }
 
-    try {
+  public async loadGamesInfo(): Promise<boolean> {
+    let json: CachedGameInfo = { games: [] };
+    if (!fs.existsSync(this.gamesFilePath)) {
+      log.warn(`${gamesInfoFileName} not found`);
+    } else {
+      log.debug(`Loading ${gamesInfoFileName}...`);
+
       const data = fs.readFileSync(this.gamesFilePath, "utf-8");
       const json = JSON.parse(data) as CachedGameInfo;
-      if (Array.isArray(json)) {
+      const lastDownloaded = new Date(json.lastDownloaded || 0);
+
+      if (!json || !Array.isArray(json.games)) {
         log.error("Invalid games_info.json");
-        await this.updateMetadata();
-        return true;
-      }
-      const lastDownloaded = new Date(json.lastDownloaded);
-      if (new Date().getTime() - lastDownloaded.getTime() > 1000 * 60 * 60 * 24) {
+      } else if (
+        new Date().getTime() - lastDownloaded.getTime() >
+        VprManager.METADATA_EXPIRATION_TIME
+      ) {
         log.warn("Games info is outdated");
-        await this.updateMetadata();
-        return true;
       } else {
-        log.userInfo("Games info is up to date " + lastDownloaded.toISOString());
+        this.games.clear();
+        json.games.forEach(game => {
+          this.games.set(game.releaseName, game);
+        });
+
+        log.userInfo("Games loaded from cache:", lastDownloaded);
+        return true;
       }
-
-      this.games.clear();
-      json.games.forEach(game => {
-        this.games.set(game.releaseName, game);
-      });
-
-      log.debug("Games loaded successfully");
-      return true;
-    } catch (error) {
-      log.error("Failed to load games_info.json:", error);
-      return false;
     }
+
+    await this.updateMetadata();
+    log.userInfo("Games loaded successfully");
+
+    return true;
   }
 
   public saveGamesInfo(): boolean {
@@ -88,6 +92,7 @@ export class VprManager extends RunSystemCommand {
       const games = Array.from(this.games.values());
       const json: CachedGameInfo = {
         lastDownloaded: new Date().toISOString(),
+        // metadataHash: this.getHash(games),
         games,
       };
       fs.writeFileSync(this.gamesFilePath, JSON.stringify(json, null, 2), "utf-8");
@@ -99,13 +104,15 @@ export class VprManager extends RunSystemCommand {
     }
   }
 
-  public getGame(name: string): GameInfo | undefined {
-    return this.games.get(name);
+  private getHash(games: any): string {
+    const json = JSON.stringify(games);
+    const hash = crypto.createHash("sha256");
+    hash.update(json);
+    return hash.digest("hex");
   }
 
-  public addOrUpdateGame(game: GameInfo): void {
-    this.games.set(game.releaseName, game);
-    this.saveGamesInfo();
+  public getGame(name: string): GameInfo | undefined {
+    return this.games.get(name);
   }
 
   public async updateMetadata(): Promise<boolean> {
@@ -116,51 +123,40 @@ export class VprManager extends RunSystemCommand {
       return false;
     }
 
-    try {
-      const downloaded = await downloader.downloadFile(
-        metaFileName,
-        vrpInfo?.baseUri,
-        metaFilePath
-      );
+    const downloaded = await downloader.downloadFile(metaFileName, vrpInfo?.baseUri, metaFilePath);
 
-      if (!downloaded) {
-        log.error("Failed to download metadata");
-        return false;
-      }
-
-      const SevenZipPath = await this.getSevenZipPath();
-      await new Promise((resolve, reject) => {
-        log.debug("Extracting metadata...", SevenZipPath);
-        const seven = extractFull(metaFilePath, downloadDir, {
-          $bin: SevenZipPath,
-          password: vrpInfo.password,
-        });
-        seven.on("end", function () {
-          resolve(null);
-        });
-
-        seven.on("error", reject);
-      });
-
-      this.parseMetadata();
-      void this.loadGamesInfo();
-      return true;
-    } catch (error) {
-      log.error("Metadata update failed:", error);
+    if (!downloaded) {
+      log.error("Failed to download metadata");
       return false;
     }
+
+    const SevenZipPath = await this.getSevenZipPath();
+    await new Promise((resolve, reject) => {
+      log.debug("Extracting metadata...", SevenZipPath);
+      const seven = extractFull(metaFilePath, downloadDir, {
+        $bin: SevenZipPath,
+        password: vrpInfo.password,
+      });
+      seven.on("end", function () {
+        resolve(null);
+      });
+
+      seven.on("error", reject);
+    });
+
+    this.parseMetadata();
+    this.loadGamesInfo();
+    return true;
   }
 
   public parseMetadata(): boolean {
-    const filePath = join(downloadDir, "VRP-GameList.txt");
+    const filePath = join(downloadDir, vprFileName);
 
-    // Check if the file exists
     if (!fs.existsSync(filePath)) {
-      log.error("VRP-GameList.txt not found");
+      log.error(`${vprFileName} not found`);
       return false;
     }
 
-    // Attempt to open the file
     const fileContent = fs.readFileSync(filePath, "utf-8");
     const lines = fileContent.split("\n");
 
@@ -174,7 +170,7 @@ export class VprManager extends RunSystemCommand {
       const parts = line.split(";");
 
       if (parts.length < 6) {
-        log.error("Invalid line in VRP-GameList.txt:", line);
+        log.error(`Invalid line in ${vprFileName}:`, line);
         continue;
       }
 
@@ -193,7 +189,7 @@ export class VprManager extends RunSystemCommand {
 
     this.saveGamesInfo();
     if (isEmpty) {
-      log.error("No games found in VRP-GameList.txt");
+      log.error(`No games found in ${vprFileName}`);
       return false;
     } else {
       log.debug("Metadata parsed successfully");
