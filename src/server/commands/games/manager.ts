@@ -55,7 +55,6 @@ class GameManager {
     }
     loadedGames = true;
     try {
-      log.info("Downloading games data from...", GameManager.GAMES_URL);
       const data = await this.downloader.download(GameManager.GAMES_URL);
 
       const json = JSON.parse(data);

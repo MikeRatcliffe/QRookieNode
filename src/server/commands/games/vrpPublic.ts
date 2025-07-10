@@ -13,7 +13,7 @@ export class VrpPublic {
     const downloader = new HttpDownloader();
 
     try {
-      log.info(`Fetching VPR public data from: ${VrpPublic.PUBLIC_URL}`);
+      log.debug(`Fetching VPR public data from: ${VrpPublic.PUBLIC_URL}`);
       const data = await downloader.download(VrpPublic.PUBLIC_URL);
 
       const json = JSON.parse(data);

@@ -39,7 +39,7 @@ const cancelRequests: { [id: string]: () => void } = {};
 
 export default class Downloader extends RunSystemCommand {
   public download(url: string): Promise<string> {
-    log.info(`Downloading with https: ${url}`);
+    log.debug(`Downloading with https: ${url}`);
     return new Promise((resolve, reject) => {
       https.get(url, response => {
         let data = "";
@@ -87,7 +87,7 @@ export default class Downloader extends RunSystemCommand {
       "user-agent": "rclone/v1.65.2",
       accept: "*/*",
     };
-    log.info(`Downloading ${url} to ${finalPath}`);
+    log.debug(`Downloading ${url} to ${finalPath}`);
 
     return new Promise((resolve, reject) => {
       const client = http2.connect(url.origin);

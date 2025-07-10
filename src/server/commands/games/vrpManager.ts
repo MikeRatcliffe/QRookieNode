@@ -67,7 +67,7 @@ export class VprManager extends RunSystemCommand {
         await this.updateMetadata();
         return true;
       } else {
-        log.info("Games info is up to date");
+        log.userInfo("Games info is up to date " + lastDownloaded.toISOString());
       }
 
       this.games.clear();
@@ -75,7 +75,7 @@ export class VprManager extends RunSystemCommand {
         this.games.set(game.releaseName, game);
       });
 
-      log.info("Games loaded successfully");
+      log.debug("Games loaded successfully");
       return true;
     } catch (error) {
       log.error("Failed to load games_info.json:", error);
@@ -91,6 +91,7 @@ export class VprManager extends RunSystemCommand {
         games,
       };
       fs.writeFileSync(this.gamesFilePath, JSON.stringify(json, null, 2), "utf-8");
+      log.debug("games_info.json saved successfully");
       return true;
     } catch (error) {
       log.error("Failed to save games_info.json:", error);
@@ -129,7 +130,7 @@ export class VprManager extends RunSystemCommand {
 
       const SevenZipPath = await this.getSevenZipPath();
       await new Promise((resolve, reject) => {
-        log.info("Extracting metadata...", SevenZipPath);
+        log.debug("Extracting metadata...", SevenZipPath);
         const seven = extractFull(metaFilePath, downloadDir, {
           $bin: SevenZipPath,
           password: vrpInfo.password,
@@ -195,7 +196,7 @@ export class VprManager extends RunSystemCommand {
       log.error("No games found in VRP-GameList.txt");
       return false;
     } else {
-      log.info("Metadata parsed successfully");
+      log.debug("Metadata parsed successfully");
       return true;
     }
   }

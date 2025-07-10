@@ -59,6 +59,6 @@ server.listen(PORT, () => {
     log.userInfo(`Server mode running on http://${ip}:${PORT}`);
   });
 });
-log.debug(`Serving static files from ${reactBuildPath}`);
+log.info(`Serving static files from ${reactBuildPath}`);
 
 export default server;
