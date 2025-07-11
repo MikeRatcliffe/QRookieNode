@@ -1,6 +1,6 @@
 # Rookie Node (Electron Version)
 
-QRookie-Node is an application for downloading and installing games for Quest devices, inspired by the [QRookie by \*_@glaumar_](https://github.com/glaumar/QRookie). This project adapts the original implementation to a modern development environment, leveraging **Node.js** and **React** for greater flexibility and ease of use across multiple platforms.
+QRookie-Node is an application for downloading and installing games for Quest devices, inspired by the [QRookie by @glaumar](https://github.com/glaumar/QRookie). This project adapts the original implementation to a modern development environment, leveraging **Node.js** and **React** for greater flexibility and ease of use across multiple platforms.
 
 ## Changelog
 

@@ -41,6 +41,7 @@
 ## Changes Log
 
 ### Changes Release 0.3.1
+
 - Build/Dev
   - Remove react-scripts and use vite instead
 - Games
@@ -140,7 +141,9 @@
   - Big Refactor
   - Update CI
   - Fix showing app version
-- Settings - Little Refactor - Change Repo Infos https://github.com/victorwads/QRookieNode/compare/0.1.0...0.1.1
+- Settings
+  - Little Refactor
+  - Change Repo Infos
 
 ### Changes Release 0.1.0
 
@@ -150,7 +153,9 @@
   - Working on Android Proot distros.
 - Games / Library
   - Download Cancelation
-- Settings - Improve HelthCheck - Fix Windows Helth Check https://github.com/victorwads/QRookieNode/compare/0.0.10...0.1.0
+- Settings
+  - Improve HelthCheck
+  - Fix Windows Helth Check
 
 ### Changes Release 0.0.10
 
@@ -165,11 +170,18 @@
 - Settings
   - Improve HelthCheck
   - Fix Windows Helth Check
-- Core - Logs are now centralized and colored - Linux arm64 custom Android Tools download https://github.com/victorwads/QRookieNode/compare/0.0.9...0.0.10
+- Core
+  - Logs are now centralized and colored
+  - Linux arm64 custom Android Tools download
 
 ### Changes Release 0.0.9
 
-- Downloads - Fix game buttons logic - Remove from disk - Install games (with obb data) 🎉 - Add Download speed info - Improve Install/Unzip/Pushing Info https://github.com/victorwads/QRookieNode/compare/0.0.8...0.0.9
+- Downloads
+  - Fix game buttons logic
+  - Remove from disk
+  - Install games (with obb data) 🎉
+  - Add Download speed info
+  - Improve Install/Unzip/Pushing Info
 
 ### Changes Release 0.0.8
 
@@ -197,7 +209,9 @@
 - Downloads
   - Download file lock
   - Redownload corrupted download files
-- Settings - Refactor - Set games download directory 🎉 https://github.com/victorwads/QRookieNode/compare/0.0.6...0.0.7
+- Settings
+  - Refactor
+  - Set games download directory 🎉
 
 ### Changes Release 0.0.6
 
@@ -206,22 +220,25 @@
   - Listing Installed Games
   - Connect with other Devices
   - Connect with TCP IP (Wireless)
-- Downloading Games - In Game Detailed progress info - In Downloads Tab, list downlaoding stats - Multiconnection download https://github.com/victorwads/QRookieNode/compare/0.0.5...0.0.6
+- Downloading Games
+  - In Game Detailed progress info
+  - In Downloads Tab, list downlaoding stats
+  - Multiconnection download
 
 ### Changes Release 0.0.5
 
-- Working Download Games https://github.com/victorwads/QRookieNode/compare/0.0.4...0.0.5
+- Working Download Games
 
 ### Changes Release 0.0.4 (develop version)
 
 - Fix redirect http requests manually
-- Show machine adb system info https://github.com/victorwads/QRookieNode/compare/0.0.3...0.0.4
+- Show machine adb system info
 
 ### Changes Release 0.0.3
 
 - Add Rookie Download Count status for open source repos
 - Improve adbTools downloading for arm
-- Ci Improviments https://github.com/victorwads/QRookieNode/compare/0.0.2...0.0.3
+- CI Improvements
 
 ### Changes Release 0.0.1
 
