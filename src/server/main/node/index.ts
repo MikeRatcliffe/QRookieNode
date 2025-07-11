@@ -19,11 +19,10 @@ if (server.listening) {
 
     ws.on("message", message => {
       try {
-        const messageJSON = JSON.stringify(message);
-        const parsedMessage = JSON.parse(messageJSON) as BridgeMessage;
-        log.debug(`Received message: ${messageJSON}`);
-
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        const parsedMessage = JSON.parse(String(message)) as BridgeMessage;
         if (parsedMessage.event === "command") {
+          log.debug(`Received message: `, parsedMessage);
           executeCommand(parsedMessage.data)
             .then((data: unknown) => {
               ws.send(
@@ -45,6 +44,8 @@ if (server.listening) {
                 })
               );
             });
+        } else {
+          log.error(`Unknown event type: ${parsedMessage.event}`, parsedMessage);
         }
       } catch (err) {
         log.error("Error parsing message", err);
