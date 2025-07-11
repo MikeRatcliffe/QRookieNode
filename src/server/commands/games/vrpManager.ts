@@ -38,7 +38,7 @@ export class VprManager extends RunSystemCommand {
 
   constructor() {
     super();
-    this.loadGamesInfo();
+    void this.loadGamesInfo();
   }
 
   private get gamesFilePath(): string {
@@ -50,7 +50,6 @@ export class VprManager extends RunSystemCommand {
   }
 
   public async loadGamesInfo(): Promise<boolean> {
-    let json: CachedGameInfo = { games: [] };
     if (!fs.existsSync(this.gamesFilePath)) {
       log.warn(`${gamesInfoFileName} not found`);
     } else {
@@ -139,7 +138,7 @@ export class VprManager extends RunSystemCommand {
     });
 
     this.parseMetadata();
-    this.loadGamesInfo();
+    await this.loadGamesInfo();
     return true;
   }
 

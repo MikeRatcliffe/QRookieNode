@@ -4,7 +4,7 @@ import * as path from "path";
 import { promisify } from "util";
 
 import { binExt, platformToolsDir, setupTools } from "@commands/adb/androidToolsSetup";
-import log from "./log";
+import log from "@server/log";
 
 const execFileAsync = promisify(execFile);
 
@@ -41,8 +41,8 @@ export default abstract class SystemProcess {
       const { stdout } = await execFileAsync("which", [comandName]);
       const path = (stdout || "").trim();
       return path !== "" ? path : null;
-    } catch (error: any) {
-      log.warn("Command error: ", error.message);
+    } catch (error: unknown) {
+      log.warn("Command error: ", error);
       return null;
     }
   }
@@ -60,9 +60,9 @@ export default abstract class SystemProcess {
       stderr = stderr.trim();
       log.command(comandWithPath, args, stdout, stderr);
       return { stdout, stderr };
-    } catch (error: any) {
-      log.commandError(comandWithPath, args, error.message);
-      return { stdout: "", stderr: error.message };
+    } catch (error: unknown) {
+      log.commandError(comandWithPath, args, error);
+      return { stdout: "", stderr: String(error) };
     }
   }
 

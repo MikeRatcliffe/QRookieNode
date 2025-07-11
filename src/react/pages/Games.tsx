@@ -12,7 +12,7 @@ import { CenteredLoading } from "./Loading";
 
 import type { Game } from "@bridge/games";
 
-type SortField = "name" | "lastUpdated" | "size" | "relevance";
+type SortField = "name" | "lastUpdated" | "size" | "relevance" | "version";
 type SortOrder = "asc" | "desc";
 
 const Games: React.FC = () => {
@@ -39,7 +39,7 @@ const Games: React.FC = () => {
     void getAdbDevices();
   }, []);
 
-  const handleSort = (field: SortField, order: SortOrder) => {
+  const handleSort = (field: SortField, order: SortOrder) => () => {
     setSortField(field);
     setSortOrder(order);
   };
@@ -71,6 +71,12 @@ const Games: React.FC = () => {
     return <GameDetailsPage game={result.find(game => game.id === id)!} />;
   }
 
+  const getSortItem = (field: SortField, order: SortOrder) => {
+    return <a className="dropdown-item" onClick={handleSort(field, order)}>
+      {getSortIcon(field, order)}
+    </a>;
+  };
+
   return <>
     <div className="game-list-header">
       <Icon icon={Icons.solid.faSearch} size="xl" />
@@ -89,52 +95,16 @@ const Games: React.FC = () => {
       </select>
       <button className="dropdown-toggle" type="button" onClick={() => setShowSort(!showSort)}>
         {getSortIcon(sortField, sortOrder)} <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName("chevron-down")} size="xs" />
-        {showSort && <>
-          <div id="sortdropdown" className="dropdown-menu">
-            <a
-              className="dropdown-item"
-              onClick={() => {
-                handleSort("name", "asc");
-              }}>
-              {getSortIcon("name", "asc")}
-            </a>
-            <a
-              className="dropdown-item"
-              onClick={() => {
-                handleSort("name", "desc");
-              }}>
-              {getSortIcon("name", "desc")}
-            </a>
-            <a
-              className="dropdown-item"
-              onClick={() => {
-                handleSort("size", "asc");
-              }}>
-              {getSortIcon("size", "asc")}
-            </a>
-            <a
-              className="dropdown-item"
-              onClick={() => {
-                handleSort("size", "desc");
-              }}>
-              {getSortIcon("size", "desc")}
-            </a>
-            <a
-              className="dropdown-item"
-              onClick={() => {
-                handleSort("lastUpdated", "asc");
-              }}>
-              {getSortIcon("lastUpdated", "asc")}
-            </a>
-            <a
-              className="dropdown-item"
-              onClick={() => {
-                handleSort("lastUpdated", "desc");
-              }}>
-              {getSortIcon("lastUpdated", "desc")}
-            </a>
-          </div>
-        </>}
+        {showSort && <div id="sortdropdown" className="dropdown-menu">
+          {getSortItem("name", "asc")}
+          {getSortItem("name", "desc")}
+          {getSortItem("size", "asc")}
+          {getSortItem("size", "desc")}
+          {getSortItem("version", "asc")}
+          {getSortItem("version", "desc")}
+          {getSortItem("lastUpdated", "asc")}
+          {getSortItem("lastUpdated", "desc")}
+        </div>}
       </button>
     </div>
     <div className={"game-list" + (isGrid ? "" : " list")}>
@@ -239,43 +209,41 @@ function sortGames(games: SearchRelevance[], field: SortField, order: SortOrder)
     if (field === "relevance") {
       const relevanceCompare = order === "asc" ? a.relevance - b.relevance : b.relevance - a.relevance;
       // If relevance is the same, sort alphabetically by game name
-      if (relevanceCompare === 0) {
-        return a.game.name.localeCompare(b.game.name);
-      }
-      return relevanceCompare;
+      if (relevanceCompare !== 0) return relevanceCompare;
+
+      // Fallback to name sorting
+      return a.game.name.localeCompare(b.game.name);
     }
 
     const aValue = a.game[field];
     const bValue = b.game[field];
 
-    if (aValue === bValue) {
-      // If the primary sort field is the same, sort by name
-      return a.game.name.localeCompare(b.game.name);
-    }
+    if (aValue === bValue) return 0;
 
-    const comparison = aValue! < bValue! ? -1 : 1;
-    return order === "asc" ? comparison : -comparison;
+    // Handle case where aValue or bValue is null or undefined
+    if (!aValue) return order === "asc" ? 1 : -1;
+    if (!bValue) return order === "asc" ? -1 : 1;
+
+    return order === "asc" ? (aValue < bValue ? -1 : 1) : aValue > bValue ? -1 : 1;
   });
 }
 
 function getSortIcon(field: SortField, order: SortOrder) {
-  switch (field) {
-    case "name":
-      return <>
-        <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName(`sort-alpha-${order}`)} size="1x" />
-        {order === "asc" ? "Name" : "Name (decending)"}
-      </>;
-    case "size":
-      return <>
-        <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName(`sort-amount-${order}`)} size="1x" />
-        {order === "asc" ? "Size" : "Size (decending)"}
-      </>;
-    case "lastUpdated":
-      return <>
-        <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName(`sort-amount-${order}`)} size="1x" />
-        {order === "asc" ? "Last Updated" : "Last Updated (decending)"}
-      </>;
-    default:
-      return null;
+  const name = camelCaseToCapitalizedWords(field);
+  let iconName = `sort-amount-${order}`;
+  let label: string = name + (order === "asc" ? "" : ` (decending)`);
+
+  const alphaFields: SortField[] = ["name"];
+  if (alphaFields.includes(field)) {
+    iconName = `sort-alpha-${order}`;
   }
+
+  return <>
+    <Icon className="dropdown-icon" icon={getIconByCaseInsensitiveName(iconName)} size="1x" />
+    {label}
+  </>;
+}
+
+function camelCaseToCapitalizedWords(str: string): string {
+  return str.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([A-Z])([A-Z][a-z])/g, "$1 $2");
 }

@@ -12,6 +12,7 @@ const commands: Command<any, any, any>[] = [DevToolsCommand, AdbCommand, GamesCo
 export const executeCommand = async (commandEvent: CommandEvent<any, any>) => {
   const command = commands.filter(command => command.type === commandEvent.type);
   if (command.length === 1) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await command[0].receiver(commandEvent.payload);
   }
   if (command.length > 1) {

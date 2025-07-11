@@ -7,7 +7,7 @@ import log from "@server/log";
 import server from "./reactServer";
 
 type BridgeMessage =
-  | { id: string; event: "command"; data: CommandEvent<any, any> }
+  | { id: string; event: "command"; data: CommandEvent<object, string> }
   | { id: string; event: "command-response"; error: boolean; data: unknown }
   | { event: "download-progress"; data: GameStatusInfo };
 
@@ -25,7 +25,7 @@ if (server.listening) {
 
         if (parsedMessage.event === "command") {
           executeCommand(parsedMessage.data)
-            .then(data => {
+            .then((data: unknown) => {
               ws.send(
                 JSON.stringify({
                   event: "command-response",
@@ -35,7 +35,7 @@ if (server.listening) {
                 })
               );
             })
-            .catch(error => {
+            .catch((error: unknown) => {
               ws.send(
                 JSON.stringify({
                   event: "command-response",

@@ -10,7 +10,7 @@ import getImagePath from "@react/bridge/image";
 import BooleanView from "./BooleanView";
 import Button from "./Button";
 import GameVerboseInfo from "./GameVerboseInfo";
-import { Icons } from "./Icons";
+import { IconDefinition, IconKey, Icons } from "./Icons";
 
 export function formatSize(size: number = 0): string {
   if (size >= 1e9) return `${(size / 1e9).toFixed(2)} GB`;
@@ -91,15 +91,23 @@ const GameCard: React.FC<GameCardProps> = ({ game, onSelect, onDownload, verbose
     });
   }, [comparation, game, loadComparation, verbose]);
 
+  const getButton = (icon: IconKey, text: string, onClick: () => unknown, wide = false) => <Button
+    key={text}
+    wide={wide}
+    onClick={() => onClick()}
+    icon={Icons.solid[icon] as IconDefinition}>
+    {text}
+  </Button>;
+
+  const getTask = (text: string) => <div key={text} className="game-card-task">
+    {text}
+  </div>;
+
   let isDownloaded = downloadManager.isGameDownloaded(game.id);
   let isInstalled = deviceManager.isGameInstalled(game.packageName);
   const status: React.ReactNode[] = [];
   if (gameStatus?.status === "installing") {
-    status.push(
-      <div key={status.length} className="game-card-task">
-        Installing
-      </div>
-    );
+    status.push(getTask("Installing"));
   } else if (gameStatus?.status === "downloading") {
     status.push(
       <div key={status.length} className="game-card-download-progress">
@@ -109,78 +117,41 @@ const GameCard: React.FC<GameCardProps> = ({ game, onSelect, onDownload, verbose
         })}
       </div>
     );
-    status.push(
-      <Button key={status.length} onClick={cancel} icon={Icons.solid.faTrash}>
-        Cancel
-      </Button>
-    );
+    status.push(getButton("faTrash", "Cancel", cancel));
   } else if (gameStatus?.status === "unzipping") {
-    status.push(
-      <div key={status.length} className="game-card-task">
-        Unzipping
-      </div>
-    );
+    status.push(getTask("Unzipping"));
   } else if (gameStatus?.status === "pushing app data") {
-    status.push(
-      <div key={status.length} className="game-card-task">
-        Pushing App data
-      </div>
-    );
+    status.push(getTask("Pushing App data"));
   } else if (gameStatus?.status === "cancelling") {
-    status.push(
-      <div key={status.length} className="game-card-task">
-        Cancelling Download
-      </div>
-    );
+    status.push(getTask("Cancelling Download"));
   } else {
     isInstalled = isInstalled || gameStatus?.status === "installed";
     if (isInstalled) {
-      status.push(
-        <Button key={status.length} wide onClick={() => void uninstall()} icon={Icons.solid.faMinusCircle}>
-          Uninstall
-        </Button>
-      );
+      status.push(getButton("faMinusCircle", "Uninstall", () => void uninstall()));
     }
     isDownloaded = isDownloaded || downloaded || false;
     if (isDownloaded) {
       if (isInstalled) {
         if (comparation.length > 0 && comparation.some(file => !file.deviceExists)) {
-          status.push(
-            <Button key={status.length} onClick={() => void install(true)} icon={Icons.solid.faDownload}>
-              Install Missing Files
-            </Button>
-          );
+          status.push(getButton("faDownload", "Install Missing Files", () => void install(true)));
         } else {
-          status.push(
-            <Button key={status.length} wide onClick={() => void install()} icon={Icons.solid.faBoxOpen}>
-              Reinstall
-            </Button>
-          );
+          status.push(getButton("faBoxOpen", "Reinstall", install), true);
         }
       } else {
-        status.push(
-          <Button key={status.length} wide onClick={() => void install()} icon={Icons.solid.faDownload}>
-            Install
-          </Button>
-        );
+        status.push(getButton("faDownload", "Install", install), true);
       }
-      status.push(
-        <Button key={status.length} onClick={() => void remove()} icon={Icons.solid.faTrash}>
-          Remove
-        </Button>
-      );
+      status.push(getButton("faTrash", "Remove", remove));
     } else if (onDownload) {
-      status.push(
-        <Button key={status.length} wide onClick={() => void onDownload(game)} icon={Icons.solid.faDownload}>
-          Download
-        </Button>
-      );
+      status.push(getButton("faDownload", "Download", () => void onDownload(game), true));
     }
   }
 
   return <>
     <div className={"game-card" + (verbose ? " verbose" : "")}>
-      <div className="game-card-image" onClick={() => onSelect && onSelect(game)} style={{ backgroundImage: `url(${getImagePath(game.packageName)})` }}>
+      <div
+        className="game-card-image"
+        onClick={() => onSelect && onSelect(game)}
+        style={{ backgroundImage: `url(${getImagePath(game.packageName)})` }}>
         {/* Add Eye Icon */}
       </div>
       <div className="game-card-content">
@@ -203,7 +174,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onSelect, onDownload, verbose
             <div>
               <strong>Version:</strong>
             </div>
-            {deviceVersion && deviceVersion != game.version && <div>
+            {deviceVersion && deviceVersion !== game.version && <div>
               <strong>Device Version:</strong>
             </div>}
             <div>
@@ -219,7 +190,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onSelect, onDownload, verbose
           <div style={{ flex: 1 }}>
             <div>{game.id}</div>
             <div>{game.version}</div>
-            {deviceVersion && deviceVersion != game.version && <div>{deviceVersion}</div>}
+            {deviceVersion && deviceVersion !== game.version && <div>{deviceVersion}</div>}
             <div>{game.category}</div>
             <div>{game.packageName}</div>
             <div>{game.lastUpdated}</div>

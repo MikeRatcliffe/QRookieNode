@@ -1,12 +1,12 @@
-const config = {
-  printWidth: 160, // Any Screen fits this 190 caracters easily, so 160 is a good compromise
+export default {
+  printWidth: 150, // Any Screen fits this 190 caracters easily, so 150 is a good compromise
   tabWidth: 2,
   useTabs: false,
   semi: true,
   singleQuote: false,
   quoteProps: "as-needed",
   jsxSingleQuote: false,
-  jsxBracketSameLine: true,
+  singleAttributePerLine: false,
   bracketSameLine: true,
   trailingComma: "es5",
   bracketSpacing: true,
@@ -14,5 +14,3 @@ const config = {
   proseWrap: "never",
   endOfLine: "lf",
 };
-
-export default config;

@@ -32,7 +32,7 @@ const Devices: React.FC = () => {
     setLoading(false);
   };
 
-  const connectionFeedback = async (task: Promise<any>, message: string) => {
+  const connectionFeedback = async (task: Promise<unknown>, message: string) => {
     setLoading(true);
     const result = await task;
     const devices = getDevices();

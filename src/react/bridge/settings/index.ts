@@ -3,7 +3,14 @@ import semver from "semver";
 import { repoInfo, RepoDownloadsInfo, repoDownloadsInfo } from "./repoInfo";
 
 import bridge from "@bridge";
-import { DevToolsCommandName, Settings, SettingsCommandName, SettingsCommandOutputs, SettingsCommandPayload, SystemHealth } from "@server/commands/types";
+import {
+  DevToolsCommandName,
+  Settings,
+  SettingsCommandName,
+  SettingsCommandOutputs,
+  SettingsCommandPayload,
+  SystemHealth,
+} from "@server/commands/types";
 export type { GitHubRelease, Settings, SystemHealth } from "@server/commands/types";
 export type { RepoDownloadsInfo };
 

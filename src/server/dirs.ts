@@ -27,4 +27,3 @@ export const gamesDir = join(downloadDir, gamesDirName);
 log.info("DefaultFolders", module.exports);
 
 mkdirSync(extractedDir, { recursive: true });
-mkdirSync(downloadDir, { recursive: true });

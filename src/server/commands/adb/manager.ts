@@ -55,7 +55,9 @@ class AdbManager extends SystemProcess {
     const all = serials.map(async serial => ({
       serial,
       ip: await this.getIp(serial),
-      model: this.devices.find(device => device.serial === serial)?.model || (await this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.product.model"])),
+      model:
+        this.devices.find(device => device.serial === serial)?.model ||
+        (await this.runAdbCommand(["-s", serial, "shell", "getprop", "ro.product.model"])),
     }));
 
     this.devices = (await Promise.all(all)).map(device => ({

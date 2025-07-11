@@ -49,7 +49,7 @@ function getPlatform(): "darwin" | "win32" | "linux" | "android" {
   throw new Error(`Unsupported platform: ${platform}`);
 }
 
-function downloadFile(url: string, dest: string): Promise<void> {
+function downloadFile(url: string, dest: string): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
     https
@@ -64,7 +64,7 @@ function downloadFile(url: string, dest: string): Promise<void> {
           return;
         }
         response.pipe(file);
-        file.on("finish", () => file.close(resolve as any));
+        file.on("finish", () => file.close(resolve));
       })
       .on("error", err => {
         fs.unlinkSync(dest); // Remove the corrupted file

@@ -1,13 +1,4 @@
-declare global {
-  interface Window {
-    sendCommand: (_command: string, _payload?: unknown) => Promise<unknown>;
-    downloads: {
-      receive: (_callback: (_data: unknown) => void) => void;
-    };
-  }
-}
-
-export type CommandSender = <Name extends string, Input = unknown, Output = unknown>(command: CommandEvent<Input, Name>) => Promise<Output>;
+export type CommandSender = <Name extends string, Input = object, Output = object>(command: CommandEvent<Input, Name>) => Promise<Output>;
 export type CommandReceiver<Input, Output, Type> = (payload?: Input, name?: Type) => Promise<Output>;
 export type Command<Input, Output, Type extends string> = { type: Type; receiver: CommandReceiver<Input, Output, Type> };
 export type CommandEvent<Input, Name extends string> = { type: Name; payload?: Input };

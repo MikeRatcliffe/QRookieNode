@@ -7,7 +7,7 @@ export type { IconDefinition };
 export default Icon;
 
 type IconList = typeof solid;
-type IconKey = keyof IconList;
+export type IconKey = keyof IconList;
 
 interface IconSearchName {
   icon: IconDefinition;

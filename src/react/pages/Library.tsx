@@ -68,7 +68,9 @@ const Library: React.FC = () => {
     <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", padding: "1em" }}>
       {downloading.length !== 0 && <div style={{ flex: 1 }}>
         <h2>Downloading Games</h2>
-        <div className="game-list">{downloading.map(game => <GameCard game={game} key={game.id} onSelect={() => void navigate(`/games/${game.id}`)} />)}</div>
+        <div className="game-list">
+          {downloading.map(game => <GameCard game={game} key={game.id} onSelect={() => void navigate(`/games/${game.id}`)} />)}
+        </div>
       </div>}
       {downloads.length !== 0 && <div style={{ flex: 1 }}>
         <h2>Downloaded Games</h2>

@@ -10,7 +10,7 @@ class GamesManager {
 
   constructor() {
     try {
-      this.cache = JSON.parse(localStorage.getItem(cacheKey) || "[]");
+      this.cache = JSON.parse(localStorage.getItem(cacheKey) || "[]") as Game[];
     } catch (e) {
       console.error("Failed to load games cache", e);
       this.cache = [];

@@ -8,8 +8,17 @@ export interface BridgeInterface {
   registerGameStatusReceiver: (callback: (info: GameStatusInfo) => void) => void;
 }
 
-export const isElectron = !!(window as any).sendCommand;
+export const isElectron = !!window.sendCommand;
 export const isWebsocket = !isElectron;
-export const bridge: BridgeInterface = isElectron ? new ElectronBridge() : WebSocketBridge();
+export const bridge: BridgeInterface = isElectron ? new ElectronBridge() : new WebSocketBridge();
 
 export default bridge;
+
+declare global {
+  interface Window {
+    sendCommand: CommandSender;
+    downloads: {
+      receive: (callback: (info: GameStatusInfo) => void) => void;
+    };
+  }
+}

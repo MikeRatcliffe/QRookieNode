@@ -60,7 +60,7 @@ class GameManager {
     try {
       const data = await this.downloader.download(GameManager.GAMES_URL);
 
-      const json = JSON.parse(data);
+      const json = JSON.parse(data) as WebGame[];
       if (!Array.isArray(json)) {
         log.error("Invalid data format:");
         return false;
@@ -192,7 +192,7 @@ class GameManager {
         }
       }
     } catch (err: any) {
-      progress({ id, status: "error", message: err });
+      progress({ id, status: "error", message: String(err) });
       return "Failed to install game: " + err;
     }
     progress({ id, status: "installed" });

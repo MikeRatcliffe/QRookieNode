@@ -22,7 +22,7 @@ export type RepoDownloadsInfo = {
   [repoName in keyof typeof repos]: Downloads;
 };
 
-export const repoDownloadsInfo: RepoDownloadsInfo = JSON.parse(localStorage.getItem(storageKey) || "{}");
+export const repoDownloadsInfo = JSON.parse(localStorage.getItem(storageKey) || "{}") as RepoDownloadsInfo;
 export const repoInfo = Promise.all(
   Object.entries(repos).map(([name, alias]) => {
     const repoName = name as keyof typeof repos;

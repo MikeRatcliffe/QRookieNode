@@ -18,24 +18,27 @@ if (shouldInfo || process.argv.includes("--log:warn")) {
   shouldWarn = true;
 }
 
+type arg = unknown;
+
 class UserLogger {
   private lastLogType: string | null = null;
 
-  public userInfo = (...args: any[]) => this.log("userInfo", "\x1b[33m", ...args, "\x1b[0m");
+  public userInfo = (...args: arg[]): void => this.log("userInfo", "\x1b[33m", ...args, "\x1b[0m");
 
-  public error = (...args: any[]) => this.log("error", "\x1b[31m", ...args, "\x1b[0m");
+  public error = (...args: arg[]): void => this.log("error", "\x1b[31m", ...args, "\x1b[0m");
 
-  public commandError = (command: string, args: string[], error: string) => {
+  public commandError = (command: string, args: arg[], error: unknown): void => {
     this.log(
       "commandError",
       "\x1b[31m<----------------------------------------",
       `\nCommand '${command} ${args.join(" ")}' executed with error:`,
-      "\n" + error,
+      "\n",
+      error,
       "\n---------------------------------------->\x1b[0m"
     );
   };
 
-  protected log(type: string, ...args: any[]) {
+  protected log(type: string, ...args: arg[]): void {
     if (this.lastLogType !== type) {
       console.log("");
     }
@@ -51,13 +54,19 @@ class DevLogger extends UserLogger {
     this.info("Log level set to:", { shouldDebugCommands, shouldDebug, shouldWarn, shouldInfo });
   }
 
-  public warn = (...args: any[]) => shouldWarn && this.log("warn", "\x1b[33m", ...args, "\x1b[0m");
+  public warn = (...args: arg[]): void => {
+    if (shouldWarn) this.log("warn", "\x1b[33m", ...args, "\x1b[0m");
+  };
 
-  public info = (...args: any[]) => shouldInfo && this.log("info", ...args, "");
+  public info = (...args: arg[]): void => {
+    if (shouldInfo) this.log("info", ...args, "");
+  };
 
-  public debug = (...args: any[]) => shouldDebug && this.log("debug", "\x1b[35m", ...args, "\x1b[0m");
+  public debug = (...args: arg[]): void => {
+    if (shouldDebug) this.log("debug", "\x1b[35m", ...args, "\x1b[0m");
+  };
 
-  public command = (command: string, args: string[], stdout: string, stderr: string) => {
+  public command = (command: string, args: string[], stdout: string, stderr: string): void => {
     if (!shouldDebugCommands) return;
     const stdoutLines = stdout.split("\n");
     this.log(
@@ -74,4 +83,5 @@ class DevLogger extends UserLogger {
   };
 }
 
-export default new DevLogger();
+const logger = new DevLogger();
+export default logger;

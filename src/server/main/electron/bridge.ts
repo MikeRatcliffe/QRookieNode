@@ -15,6 +15,7 @@ void app.whenReady().then(() => {
 
 console.log("Bridge is ready");
 ipcMain.handle(BridgeSendCommandEvent, async (event: IpcMainInvokeEvent, commandEvent: CommandEvent<any, any>) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return executeCommand(commandEvent);
 });
 

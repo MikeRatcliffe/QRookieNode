@@ -1,4 +1,5 @@
 {
   "debug.hideSlowPreLaunchWarning": true,
-  "debug.allowBreakpointsEverywhere": true
+  "debug.allowBreakpointsEverywhere": true,
+  "prettier.prettierPath": "./node_modules/prettier-no-jsx-parens/"
 }

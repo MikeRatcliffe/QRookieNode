@@ -7,7 +7,7 @@ type BridgeMessage =
   | {
       id: string;
       event: "command";
-      data: CommandEvent<any, any>;
+      data: CommandEvent<object, string>;
     }
   | {
       id: string;
@@ -27,7 +27,8 @@ class WebSocketBridge implements BridgeInterface {
   private isReconnecting = false;
 
   private eventHandlers: {
-    [event: string]: { resolve: (data: any) => void; reject: (err: any) => void };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [event: string]: { resolve: (value: any) => void; reject: (err: unknown) => void };
   } = {};
   private gameStatusReceiver: ((info: GameStatusInfo) => void) | null = null;
 
@@ -73,7 +74,7 @@ class WebSocketBridge implements BridgeInterface {
 
     socket.onmessage = message => {
       try {
-        const parsedMessage = JSON.parse(message.data) as BridgeMessage;
+        const parsedMessage = JSON.parse(message.data as string) as BridgeMessage;
 
         if (parsedMessage.event === "download-progress" && this.gameStatusReceiver) {
           this.gameStatusReceiver(parsedMessage.data);
@@ -123,12 +124,4 @@ class WebSocketBridge implements BridgeInterface {
   }
 }
 
-let instance: WebSocketBridge | null = null;
-
-export default function getBridge() {
-  if (!instance) {
-    instance = new WebSocketBridge();
-  }
-
-  return instance;
-}
+export default WebSocketBridge;

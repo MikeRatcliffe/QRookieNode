@@ -5,7 +5,7 @@ import { sendInfo as sendInfoNode } from "./main/node";
 let sendInfoElectron: ((info: GameStatusInfo) => void) | null = null;
 if (process.versions.electron) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     sendInfoElectron = require("./main/electron/bridge").sendInfo;
   } catch (err) {
     log.error("Failed to load Electron module:", err);

@@ -1,28 +1,30 @@
 import * as fs from "fs";
 import * as path from "path";
+import { OpenDialogOptions } from "electron";
 
 import { appDataDir, buildRoot, gamesDir, gamesDirName } from "@server/dirs";
 import log from "@server/log";
 import SystemProcess from "@server/systemProcess";
 import type { Settings, SystemHealth } from ".";
 
-export const appVersion = JSON.parse(fs.readFileSync(path.join(buildRoot, "package.json"), "utf-8")).version;
+const packageJson = JSON.parse(fs.readFileSync(path.join(buildRoot, "package.json"), "utf-8")) as { version: string };
+export const appVersion = packageJson.version;
+
+type DialogResult = { canceled: boolean; filePaths: string[] };
+type Dialog = (options: OpenDialogOptions) => Promise<DialogResult>;
 
 const settingsPath = path.join(appDataDir, "settings.json");
-const { showOpenDialog } = (function () {
-  if (process.versions.electron) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return { showOpenDialog: require("electron").dialog.showOpenDialog };
-  }
-  return { showOpenDialog: () => ({ canceled: true, filePaths: [] }) };
-})();
+const showOpenDialog: Dialog = process.versions.electron
+  ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access
+    (require("electron").dialog.showOpenDialog as Dialog)
+  : () => Promise.resolve({ canceled: true, filePaths: [] });
 
 class SettingsManager extends SystemProcess {
   private settings: Settings = {};
 
   constructor() {
     super();
-    this.settings = fs.existsSync(settingsPath) ? JSON.parse(fs.readFileSync(settingsPath, "utf-8")) : {};
+    this.settings = fs.existsSync(settingsPath) ? (JSON.parse(fs.readFileSync(settingsPath, "utf-8")) as Settings) : {};
     this.createDownloadsDir();
   }
   private createDownloadsDir() {

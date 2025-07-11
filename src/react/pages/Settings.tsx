@@ -68,7 +68,7 @@ const Settings: React.FC = () => {
       <section>
         <h2>Settings</h2>
         {Object.keys(settings).map(key => {
-          const value = (settings as any)[key];
+          const value = settings[key as keyof SettingsModel];
           return <div key={key}>
             <strong>{key}</strong>: {value}
           </div>;

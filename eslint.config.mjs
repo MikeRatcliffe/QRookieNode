@@ -1,7 +1,5 @@
 import globals from "globals";
 import importPlugin from "eslint-plugin-import";
-import prettierConfig from "eslint-config-prettier";
-import prettierPlugin from "eslint-plugin-prettier";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import reactPlugin from "eslint-plugin-react";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
@@ -23,7 +21,6 @@ export default [
       "src/**/*.spec.tsx",
     ],
   },
-  // Configuration for React code (src/react)
   {
     files: ["src/**/*.{js,jsx,ts,tsx}", "!src/server/**/*"],
     languageOptions: {
@@ -38,7 +35,7 @@ export default [
       },
       globals: {
         ...globals.browser,
-        ...globals.es2021,
+        ...globals.es2026,
       },
     },
     plugins: {
@@ -46,7 +43,6 @@ export default [
       import: importPlugin,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
-      prettier: prettierPlugin,
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
@@ -54,7 +50,6 @@ export default [
       ...tsPlugin.configs["recommended-requiring-type-checking"]?.rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
-      ...prettierConfig.rules,
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -67,7 +62,6 @@ export default [
       "import/first": "error",
       "import/no-duplicates": "error",
       "no-unused-vars": "off",
-      "prettier/prettier": "warn",
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
     },
@@ -80,7 +74,6 @@ export default [
       },
     },
   },
-  // Configuration for Server code (src/server)
   {
     files: ["src/server/**/*.ts"],
     languageOptions: {
@@ -92,19 +85,17 @@ export default [
       },
       globals: {
         ...globals.node,
-        ...globals.es2021,
+        ...globals.es2026,
       },
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
       import: importPlugin,
-      prettier: prettierPlugin,
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
       ...tsPlugin.configs["eslint-recommended"].rules,
       ...tsPlugin.configs["recommended-requiring-type-checking"]?.rules,
-      ...prettierConfig.rules,
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -118,7 +109,7 @@ export default [
       "import/no-duplicates": "error",
       "import/no-unresolved": "error",
       "no-unused-vars": "off",
-      "prettier/prettier": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
     },
     settings: {
       "import/resolver": {

@@ -137,7 +137,7 @@ export default class Downloader extends RunSystemCommand {
           req.close();
           return;
         }
-        req.on("data", chunk => {
+        req.on("data", (chunk: string) => {
           if (stream) {
             stream.write(chunk);
           } else {
@@ -273,11 +273,8 @@ export default class Downloader extends RunSystemCommand {
     let batchResult: boolean = false;
     try {
       batchResult = await this.batchDownloadFiles(id, url, downloadDirectory, files, progressInfo);
-    } catch (err: any) {
-      progressInfo = { id, status: "error", message: err.message };
-
-      progressInfo.status = "error";
-      progressInfo.message = err.message;
+    } catch (err: unknown) {
+      progressInfo = { id, status: "error", message: String(err) };
       return null;
     }
 
@@ -323,7 +320,13 @@ export default class Downloader extends RunSystemCommand {
       });
   }
 
-  private batchDownloadFiles(id: string, url: URL, downloadDirectory: string, files: DownloadProgress[], progressInfo: GameStatusInfo): Promise<boolean> {
+  private batchDownloadFiles(
+    id: string,
+    url: URL,
+    downloadDirectory: string,
+    files: DownloadProgress[],
+    progressInfo: GameStatusInfo
+  ): Promise<boolean> {
     if (progressInfo.status !== "downloading") return Promise.resolve(false);
 
     let resolvePromise: (result: boolean) => void;
