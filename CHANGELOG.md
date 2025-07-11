@@ -44,6 +44,8 @@
 
 - Build/Dev
   - Remove react-scripts and use vite instead
+- Android / Headless
+  - Fix headless websocket message parsing
 - Games
   - Fix sort words captalization
 
