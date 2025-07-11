@@ -202,7 +202,9 @@
   - Install games 🎉 (without custom obb/data)
   - New States ('downloading', 'installing', 'unziping
   - Improved event changes
-- Settings - Improve layout - Improve System Helth Info https://github.com/victorwads/QRookieNode/compare/0.0.7...0.0.8
+- Settings
+  - Improve layout
+  - Improve System Helth Info
 
 ### Changes Release 0.0.7
 
