@@ -55,10 +55,11 @@
   - Fixed the height of the "No Games Found" container on the library page.
 - Menu
   - Added simple menu options (copy/paste package names, open DevTools via shortcut).
-- Core/Infra
+- Core
   - Fixed usage of installed adb instead of platform-tools adb.
   - Corrected various typos in `.md` files and `.sh` scripts.
   - Renamed the `comands` directory to `commands`.
+  - Fix metadata update by expiration time on app init.
 - Build/Dev
   - Added React DevTools.
   - Fixed eslint issues and ran `yarn lint:fix`.
