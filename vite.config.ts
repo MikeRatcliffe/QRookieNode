@@ -1,15 +1,10 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 
-export default {
-  eslint: {
-    enable: false,
-  },
-  devServer: {
-    client: {
-      overlay: false,
-    },
-  },
-  webpack: {
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
     alias: {
       "@react": resolve(__dirname, "src/react"),
       "@pages": resolve(__dirname, "src/react/pages"),
@@ -20,4 +15,11 @@ export default {
       "@main": resolve(__dirname, "src/server/main"),
     },
   },
-};
+  build: {
+    outDir: "dist/react",
+    emptyOutDir: true,
+  },
+  server: {
+    port: 3000,
+  },
+});

@@ -20,8 +20,8 @@
     "bundle:no-build": "electron-builder",
     "bundle:mac-dev": "yarn bundle --mac --dir -c.mac.identity=null",
     "install:mac": "yarn bundle:mac-dev && cp -R dist/mac-arm64/QRookie.app /Applications",
-    "react:dev": "cross-env BROWSER=none craco start",
-    "react:build": "cross-env BUILD_PATH=dist/react craco build",
+    "react:dev": "vite",
+    "react:build": "vite build",
     "server:build": "tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json && cpy package.json dist/server --rename=package.json && yarn dist:fixpackage",
     "dist:fixpackage": "yarn json -I -f ./dist/server/package.json -e \"delete this.dependencies; delete this.build; delete this.scripts; delete this.devDependencies; this.main='index.js'\"",
     "electron:dev": "nodemon --watch src/server --ext ts --exec \"yarn server:build && yarn electron:start\"",
@@ -30,7 +30,7 @@
     "format-check": "prettier-no-jsx-parens --check \"**/*.{ts,tsx,css,md}\"",
     "lint": "eslint --config ./eslint.config.mjs src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --config ./eslint.config.mjs src --ext .js,.jsx,.ts,.tsx --fix",
-    "test": "craco test"
+    "test": "vitest"
   },
   "dependencies": {
     "7zip-bin": "^5.2.0",
@@ -42,12 +42,11 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.1",
-    "react-scripts": "5.0.1",
     "semver": "^7.7.1",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@craco/craco": "^7.1.0",
     "@eslint/js": "^9.26.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -58,9 +57,11 @@
     "@types/node-7z": "^2.1.10",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "@typescript-eslint/utils": "^8.32.1",
+    "@vitejs/plugin-react": "^4.6.0",
     "cpy-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "electron": "^37.2.1",
@@ -80,7 +81,9 @@
     "prettier-no-jsx-parens": "^3.4.0",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.19.0"
+    "typescript-eslint": "^8.19.0",
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
   },
   "build": {
     "appId": "br.com.victor.qrookie.node",

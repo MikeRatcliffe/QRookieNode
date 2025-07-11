@@ -1,4 +1,4 @@
-import { WebSocket, Server } from "ws";
+import { WebSocket, Server as WebSocketServer } from "ws";
 
 import { executeCommand } from "@server/commands";
 import { appVersion } from "@server/commands/settings/manager";
@@ -13,7 +13,7 @@ type BridgeMessage =
 
 if (server.listening) {
   log.info("WebSocket server is listening");
-  new Server({ server }).on("connection", ws => {
+  new WebSocketServer({ server }).on("connection", ws => {
     connections.push(ws);
     log.debug("Client connected via WebSocket");
 
