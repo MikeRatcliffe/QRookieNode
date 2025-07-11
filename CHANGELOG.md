@@ -6,20 +6,16 @@
   - Add Device Status on TabBar
   - Add Back Button on Desktop Version
 - **Games Page**
-  - Sort by Name, Size, Date
   - Filter by Installed, Not Installed
 - **Library**
   - Open Downloads Folder (Only Desktop Version)
   - Fix Install Errors not showing
     - Ask to continue or remove
-  - Feature install only game data
   - Add Game Eye Icon when click is available
   - Manage Storage
   - Split Device Library and Local Library
-  - Show Total Download Speed
 - **Game Details**
   - Show Game Download Storage Usage
-  - Show Game Downloaded Files
   - Show Installed Game Version
 - **Devices**
   - Filter not VR android devices
@@ -43,6 +39,12 @@
   - Choose Max Files Simultaneos Downloads
 
 ## Changes Log
+
+### Changes Release 0.3.1
+- Build/Dev
+  - Remove react-scripts and use vite instead
+- Games
+  - Fix sort words captalization
 
 ### Changes Release 0.3.0
 
